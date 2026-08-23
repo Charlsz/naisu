@@ -8,10 +8,32 @@ const inter = Inter({
   subsets: ["latin"],
 })
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://naisu.vercel.app"
+function resolveSiteUrl() {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "")
+  if (explicit) return explicit
 
-const title = "naisu! "
+  // Set automatically on Vercel builds for *this* project
+  const production = process.env.VERCEL_PROJECT_PRODUCTION_URL?.replace(
+    /\/$/,
+    ""
+  )
+  if (production) {
+    return production.startsWith("http")
+      ? production
+      : `https://${production}`
+  }
+
+  const preview = process.env.VERCEL_URL?.replace(/\/$/, "")
+  if (preview) {
+    return preview.startsWith("http") ? preview : `https://${preview}`
+  }
+
+  return "http://localhost:3000"
+}
+
+const siteUrl = resolveSiteUrl()
+
+const title = "naisu"
 const description =
   "UI components. Small, expressive pieces you can drop into any project."
 
@@ -33,8 +55,11 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "naisu" }],
   creator: "naisu",
+  alternates: {
+    canonical: siteUrl,
+  },
   icons: {
-    icon: "/naisu_white.ico",
+    icon: [{ url: "/naisu_white.ico", type: "image/x-icon" }],
   },
   openGraph: {
     type: "website",
@@ -43,20 +68,13 @@ export const metadata: Metadata = {
     siteName: "naisu",
     title,
     description,
-    images: [
-      {
-        url: "/og.png",
-        width: 1200,
-        height: 630,
-        alt: "naisu — motion UI components",
-      },
-    ],
+    // Image comes from src/app/opengraph-image.png (file-based metadata)
   },
   twitter: {
     card: "summary_large_image",
     title,
     description,
-    images: ["/og.png"],
+    // Image comes from src/app/twitter-image.png
   },
   robots: {
     index: true,
