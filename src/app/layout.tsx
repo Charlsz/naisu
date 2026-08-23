@@ -11,9 +11,9 @@ const inter = Inter({
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://naisu.vercel.app"
 
-const title = "naisu — motion UI components"
+const title = "naisu! "
 const description =
-  "Copy-paste motion UI components for Next.js. Small, expressive pieces you can drop into any project."
+  "UI components. Small, expressive pieces you can drop into any project."
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
