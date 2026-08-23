@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
+import { Analytics } from "@vercel/analytics/next"
 
 import "./globals.css"
 
@@ -12,7 +13,6 @@ function resolveSiteUrl() {
   const explicit = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "")
   if (explicit) return explicit
 
-  // Set automatically on Vercel builds for *this* project
   const production = process.env.VERCEL_PROJECT_PRODUCTION_URL?.replace(
     /\/$/,
     ""
@@ -28,7 +28,8 @@ function resolveSiteUrl() {
     return preview.startsWith("http") ? preview : `https://${preview}`
   }
 
-  return "http://localhost:3000"
+  // Production custom domain
+  return "https://naisu.charlsz.tech"
 }
 
 const siteUrl = resolveSiteUrl()
@@ -56,7 +57,7 @@ export const metadata: Metadata = {
   authors: [{ name: "naisu" }],
   creator: "naisu",
   alternates: {
-    canonical: siteUrl,
+    canonical: "/",
   },
   icons: {
     icon: [{ url: "/naisu_white.ico", type: "image/x-icon" }],
@@ -64,17 +65,25 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: siteUrl,
+    url: "/",
     siteName: "naisu",
     title,
     description,
-    // Image comes from src/app/opengraph-image.png (file-based metadata)
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        type: "image/png",
+        alt: "naisu — motion UI components",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title,
     description,
-    // Image comes from src/app/twitter-image.png
+    images: ["/og.png"],
   },
   robots: {
     index: true,
@@ -91,6 +100,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full bg-[#FDFDFC] font-sans text-[#111111]">
         {children}
+        <Analytics />
       </body>
     </html>
   )
