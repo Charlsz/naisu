@@ -1,14 +1,62 @@
 "use client"
 
 import * as React from "react"
+import dynamic from "next/dynamic"
 import Image from "next/image"
 
 import { useSound } from "@/components/sound-provider"
 import { components } from "@/content/components"
 import { cn } from "@/lib/utils"
 
+const PixelEarth = dynamic(() => import("@/components/pixel-earth"), {
+  ssr: false,
+  loading: () => (
+    <div className="size-[176px] shrink-0" aria-hidden />
+  ),
+})
+
+/** Nav column width (w-44) — earth fills it exactly */
+const NAV_WIDTH_PX = 176
+
 export function SideNav({ activeId }: { activeId?: string }) {
   const { muted, toggle } = useSound()
+  const listRef = React.useRef<HTMLElement>(null)
+  const [canScrollUp, setCanScrollUp] = React.useState(false)
+  const [canScrollDown, setCanScrollDown] = React.useState(false)
+
+  const syncFades = React.useCallback(() => {
+    const el = listRef.current
+    if (!el) return
+    const { scrollTop, scrollHeight, clientHeight } = el
+    const max = scrollHeight - clientHeight
+    setCanScrollUp(scrollTop > 1)
+    setCanScrollDown(max > 1 && scrollTop < max - 1)
+  }, [])
+
+  React.useEffect(() => {
+    const el = listRef.current
+    if (!el) return
+
+    syncFades()
+    el.addEventListener("scroll", syncFades, { passive: true })
+    const ro = new ResizeObserver(syncFades)
+    ro.observe(el)
+    if (el.firstElementChild) ro.observe(el.firstElementChild)
+
+    return () => {
+      el.removeEventListener("scroll", syncFades)
+      ro.disconnect()
+    }
+  }, [syncFades])
+
+  // Keep the active item visible in the nav list
+  React.useEffect(() => {
+    if (!activeId || !listRef.current) return
+    const btn = listRef.current.querySelector<HTMLElement>(
+      `[data-nav-id="${activeId}"]`
+    )
+    btn?.scrollIntoView({ block: "nearest", behavior: "smooth" })
+  }, [activeId])
 
   function scrollTo(id: string) {
     const el = document.getElementById(id)
@@ -27,8 +75,11 @@ export function SideNav({ activeId }: { activeId?: string }) {
   }
 
   return (
-    <aside className="pointer-events-none fixed top-4 left-4 z-40 flex w-44 flex-col gap-4">
-      <div className="pointer-events-auto flex items-center justify-between gap-2">
+    <aside
+      data-side-nav
+      className="pointer-events-none fixed top-4 bottom-0 left-4 z-40 flex w-44 flex-col gap-4 pb-3"
+    >
+      <div className="pointer-events-auto flex shrink-0 items-center justify-between gap-2">
         <button
           type="button"
           aria-label="Naisu — top"
@@ -53,7 +104,6 @@ export function SideNav({ activeId }: { activeId?: string }) {
             onClick={toggle}
             className="flex size-8 items-center justify-center transition-opacity hover:opacity-70 active:scale-95"
           >
-            {/* volume-up: flaticon/6996058 · volume-off: flaticon/7640162 */}
             <Image
               src={muted ? "/volume-off.png" : "/volume-on.png"}
               alt=""
@@ -70,7 +120,6 @@ export function SideNav({ activeId }: { activeId?: string }) {
             aria-label="GitHub"
             className="flex size-8 items-center justify-center transition-opacity hover:opacity-70 active:scale-95"
           >
-            {/* Icon: https://www.flaticon.com/free-icon/github_3128308 */}
             <Image
               src="/github.png"
               alt=""
@@ -82,35 +131,62 @@ export function SideNav({ activeId }: { activeId?: string }) {
         </div>
       </div>
 
-      <nav
-        aria-label="Components"
-        className="pointer-events-auto max-h-[calc(100vh-5.5rem)] overflow-y-auto"
+      <div className="pointer-events-auto relative min-h-0 flex-1">
+        <nav
+          ref={listRef}
+          aria-label="Components"
+          className="h-full overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          <ul className="flex flex-col gap-1">
+            {components.map((item) => {
+              const active = activeId === item.id
+              return (
+                <li key={item.id}>
+                  <button
+                    type="button"
+                    data-nav-id={item.id}
+                    onClick={() => scrollTo(item.id)}
+                    className={cn(
+                      "flex h-8 w-full items-center gap-2 rounded-lg px-2 text-left text-[11px] leading-tight transition-transform transition-colors active:scale-[0.98]",
+                      active
+                        ? "bg-[#111111] font-medium text-[#FDFDFC]"
+                        : "font-normal text-[#111111] hover:bg-[#111111]/8"
+                    )}
+                  >
+                    <span className="w-4 shrink-0 tabular-nums opacity-70">
+                      {item.index}
+                    </span>
+                    <span className="truncate">{item.label}</span>
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+        </nav>
+
+        {/* Soft white edge blur — only when more content sits that way */}
+        <div
+          aria-hidden
+          className={cn(
+            "pointer-events-none absolute inset-x-0 top-0 h-0.5 bg-white blur-[2px] transition-opacity duration-200",
+            canScrollUp ? "opacity-100" : "opacity-0"
+          )}
+        />
+        <div
+          aria-hidden
+          className={cn(
+            "pointer-events-none absolute inset-x-0 bottom-0 h-0.5 bg-white blur-[2px] transition-opacity duration-200",
+            canScrollDown ? "opacity-100" : "opacity-0"
+          )}
+        />
+      </div>
+
+      <div
+        className="pointer-events-auto mt-auto shrink-0"
+        aria-label="Pixel earth"
       >
-        <ul className="flex flex-col gap-1">
-          {components.map((item) => {
-            const active = activeId === item.id
-            return (
-              <li key={item.id}>
-                <button
-                  type="button"
-                  onClick={() => scrollTo(item.id)}
-                  className={cn(
-                    "flex h-8 w-full items-center gap-2 rounded-lg px-2 text-left text-[11px] leading-tight transition-transform transition-colors active:scale-[0.98]",
-                    active
-                      ? "bg-[#111111] font-medium text-[#FDFDFC]"
-                      : "font-normal text-[#111111] hover:bg-[#111111]/8"
-                  )}
-                >
-                  <span className="w-4 shrink-0 tabular-nums opacity-70">
-                    {item.index}
-                  </span>
-                  <span className="truncate">{item.label}</span>
-                </button>
-              </li>
-            )
-          })}
-        </ul>
-      </nav>
+        <PixelEarth size={NAV_WIDTH_PX} />
+      </div>
     </aside>
   )
 }

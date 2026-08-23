@@ -46,5 +46,6 @@ export function clickToneFromTarget(target: EventTarget | null): ClickTone | nul
   )
   if (!clickable) return null
   if (clickable.closest("[data-no-click-sound]")) return null
-  return clickable.closest("[data-component-grid]") ? "grid" : "ui"
+  // Left nav uses the sharper pop; everything else uses the softer one
+  return clickable.closest("[data-side-nav]") ? "ui" : "grid"
 }
