@@ -4,12 +4,11 @@ import * as React from "react"
 import dynamic from "next/dynamic"
 import Image from "next/image"
 import Link from "next/link"
-import { motion, AnimatePresence } from "motion/react"
+import { AnimatePresence, motion } from "motion/react"
 
 import { useSound } from "@/components/sound-provider"
-import { categories } from "@/content/components"
+import { playgroundProjects } from "@/content/playground"
 import { springs } from "@/lib/motion"
-import { smoothScrollTo } from "@/lib/smooth-scroll"
 import { cn } from "@/lib/utils"
 
 const PixelEarth = dynamic(() => import("@/components/pixel-earth"), {
@@ -19,55 +18,25 @@ const PixelEarth = dynamic(() => import("@/components/pixel-earth"), {
   ),
 })
 
-const NAV_WIDTH_PX = 176
-
-let scrollRaf = 0
-const scrollRafRef = { current: 0 }
-
-/** Scroll the page so `id` sits just under the sticky offset. */
-function scrollToSection(id: string) {
-  const el = document.getElementById(id)
-  if (!el) return
-
-  const rect = el.getBoundingClientRect()
-  const absoluteTop = window.scrollY + rect.top
-  const offset = Math.min(72, window.innerHeight * 0.08)
-  const maxScroll = Math.max(
-    0,
-    document.documentElement.scrollHeight - window.innerHeight
-  )
-  const top = Math.min(Math.max(0, absoluteTop - offset), maxScroll)
-
-  scrollRafRef.current = scrollRaf
-  smoothScrollTo({
-    from: window.scrollY,
-    to: top,
-    duration: 420,
-    apply: (y) => window.scrollTo(0, y),
-    rafRef: scrollRafRef,
-  })
-  scrollRaf = scrollRafRef.current
-}
-
-export function SideNav({ activeId }: { activeId?: string }) {
+/** Left rail for playground pages: same behavior as the components nav. */
+export function PlaygroundNav({
+  activeId,
+  onSelect,
+}: {
+  activeId?: string
+  onSelect: (id: string) => void
+}) {
   const { muted, toggle } = useSound()
   const navHighlightId = React.useId()
   const listRef = React.useRef<HTMLElement>(null)
   const [canScrollUp, setCanScrollUp] = React.useState(false)
   const [canScrollDown, setCanScrollDown] = React.useState(false)
-  const navigatingRef = React.useRef(false)
 
   const syncFades = React.useCallback(() => {
     const el = listRef.current
     if (!el) return
-    const {
-      scrollTop,
-      scrollHeight,
-      clientHeight,
-      scrollLeft,
-      scrollWidth,
-      clientWidth,
-    } = el
+    const { scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth } =
+      el
     const maxY = scrollHeight - clientHeight
     const maxX = scrollWidth - clientWidth
     setCanScrollUp(scrollTop > 1 || scrollLeft > 1)
@@ -79,13 +48,11 @@ export function SideNav({ activeId }: { activeId?: string }) {
   React.useEffect(() => {
     const el = listRef.current
     if (!el) return
-
     syncFades()
     el.addEventListener("scroll", syncFades, { passive: true })
     const ro = new ResizeObserver(syncFades)
     ro.observe(el)
     if (el.firstElementChild) ro.observe(el.firstElementChild)
-
     return () => {
       el.removeEventListener("scroll", syncFades)
       ro.disconnect()
@@ -93,7 +60,7 @@ export function SideNav({ activeId }: { activeId?: string }) {
   }, [syncFades])
 
   React.useEffect(() => {
-    if (!activeId || !listRef.current || navigatingRef.current) return
+    if (!activeId || !listRef.current) return
     const btn = listRef.current.querySelector<HTMLElement>(
       `[data-nav-id="${activeId}"]`
     )
@@ -103,14 +70,6 @@ export function SideNav({ activeId }: { activeId?: string }) {
       behavior: "auto",
     })
   }, [activeId])
-
-  function scrollTo(id: string) {
-    navigatingRef.current = true
-    window.setTimeout(() => {
-      navigatingRef.current = false
-    }, 480)
-    scrollToSection(id)
-  }
 
   return (
     <aside
@@ -123,18 +82,9 @@ export function SideNav({ activeId }: { activeId?: string }) {
     >
       <div className="pointer-events-auto flex shrink-0 items-center justify-between gap-2">
         <div className="flex items-center gap-1">
-          <button
-            type="button"
-            aria-label="Naisu top"
-            onClick={() =>
-              smoothScrollTo({
-                from: window.scrollY,
-                to: 0,
-                duration: 380,
-                apply: (y) => window.scrollTo(0, y),
-                rafRef: scrollRafRef,
-              })
-            }
+          <Link
+            href="/"
+            aria-label="Naisu home"
             className="flex size-8 shrink-0 items-center justify-center active:scale-95"
           >
             <Image
@@ -145,13 +95,13 @@ export function SideNav({ activeId }: { activeId?: string }) {
               className="size-8 object-contain"
               priority
             />
-          </button>
+          </Link>
           <Link
-            href="/playground"
-            aria-label="Playground"
+            href="/"
+            aria-label="Components"
             className="flex h-8 items-center px-1 text-[10px] font-medium text-[#667085] active:scale-95"
           >
-            play
+            ui
           </Link>
         </div>
 
@@ -204,7 +154,7 @@ export function SideNav({ activeId }: { activeId?: string }) {
       <div className="pointer-events-auto relative min-h-0 md:flex-1">
         <nav
           ref={listRef}
-          aria-label="Components"
+          aria-label="Projects"
           className={cn(
             "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
             "overflow-x-auto overflow-y-hidden",
@@ -212,15 +162,15 @@ export function SideNav({ activeId }: { activeId?: string }) {
           )}
         >
           <ul className="flex flex-row gap-1 md:flex-col">
-            {categories.map((cat, i) => {
+            {playgroundProjects.map((project, i) => {
               const index = String(i + 1).padStart(2, "0")
-              const active = activeId === cat.id
+              const active = activeId === project.id
               return (
-                <li key={cat.id} className="shrink-0">
+                <li key={project.id} className="shrink-0">
                   <button
                     type="button"
-                    data-nav-id={cat.id}
-                    onClick={() => scrollTo(cat.id)}
+                    data-nav-id={project.id}
+                    onClick={() => onSelect(project.id)}
                     className={cn(
                       "relative flex h-8 items-center gap-2 rounded-lg px-2 text-left text-[11px] leading-tight transition-colors active:scale-[0.98]",
                       "w-auto md:w-full",
@@ -231,7 +181,7 @@ export function SideNav({ activeId }: { activeId?: string }) {
                   >
                     {active ? (
                       <motion.span
-                        layoutId={`naisu-nav-active-${navHighlightId}`}
+                        layoutId={`naisu-play-nav-${navHighlightId}`}
                         transition={springs.snappy}
                         className="absolute inset-0 rounded-lg bg-[#111111]"
                       />
@@ -240,7 +190,7 @@ export function SideNav({ activeId }: { activeId?: string }) {
                       {index}
                     </span>
                     <span className="relative truncate whitespace-nowrap">
-                      {cat.label}
+                      {project.title}
                     </span>
                   </button>
                 </li>
@@ -269,7 +219,7 @@ export function SideNav({ activeId }: { activeId?: string }) {
         className="pointer-events-auto mt-auto hidden shrink-0 md:block"
         aria-label="Pixel earth"
       >
-        <PixelEarth size={NAV_WIDTH_PX} />
+        <PixelEarth />
       </div>
     </aside>
   )

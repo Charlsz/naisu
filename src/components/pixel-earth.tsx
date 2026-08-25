@@ -388,30 +388,43 @@ export default function PixelEarth({ size = 200 }: PixelEarthProps) {
   }, [size]);
 
   return (
-    <div
-      className="globe-frame"
-      style={{
-        position: "relative",
-        width: `${size}px`,
-        height: `${size}px`,
-        aspectRatio: "1 / 1",
-        overflow: "hidden",
-        borderRadius: "50%",
-        cursor: "grab",
-        touchAction: "none",
-        userSelect: "none",
-      }}
-    >
+    <div className="flex flex-col items-center gap-1.5">
+      <p className="font-sans text-[11px] font-normal leading-tight text-[#111111]">
+        Made by{" "}
+        <a
+          href="https://x.com/charlswfeelings"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-2"
+        >
+          Charlie
+        </a>
+      </p>
       <div
-        ref={containerRef}
-        className="globe-canvas"
+        className="globe-frame"
         style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
+          position: "relative",
+          width: `${size}px`,
+          height: `${size}px`,
+          aspectRatio: "1 / 1",
+          overflow: "hidden",
+          borderRadius: "50%",
+          cursor: "grab",
+          touchAction: "none",
+          userSelect: "none",
         }}
-      />
+      >
+        <div
+          ref={containerRef}
+          className="globe-canvas"
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+          }}
+        />
+      </div>
     </div>
   );
 }
