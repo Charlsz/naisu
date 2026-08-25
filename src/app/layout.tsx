@@ -61,9 +61,10 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/naisu.ico", type: "image/x-icon" },
-      { url: "/naisu.png", type: "image/png" },
+      { url: "/favicon.ico", sizes: "16x16 32x32 48x48", type: "image/x-icon" },
+      { url: "/naisu.ico", sizes: "16x16 32x32 48x48", type: "image/x-icon" },
     ],
+    shortcut: "/favicon.ico",
     apple: [{ url: "/naisu.png", type: "image/png" }],
   },
   openGraph: {
