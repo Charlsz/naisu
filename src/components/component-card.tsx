@@ -76,7 +76,7 @@ export function ComponentCard({
             stage={resolvedStage}
             escape={escape}
             spanFull={
-              panel.id === "continuous-slider" || panel.id === "anim-marquee"
+              panel.id === "continuous-slider" || panel.id === "image-carousel"
             }
           >
             {panel.children}
@@ -144,8 +144,10 @@ function DemoPanel({
             "!aspect-[5/4] !min-h-[200px] sm:!min-h-[220px]",
           id === "cool-scrollbar" &&
             "!aspect-[5/4] !min-h-[200px] sm:!min-h-[220px]",
-          (id === "continuous-slider" || id === "anim-marquee") &&
+          id === "continuous-slider" &&
             "!aspect-[28/5] !min-h-[112px] sm:!min-h-[124px]",
+          id === "image-carousel" &&
+            "!aspect-[21/9] !min-h-[148px] sm:!min-h-[168px]",
           id === "anim-corner" && "!pl-0"
         )}
       >
@@ -192,7 +194,7 @@ function DemoPanel({
             escape ? "overflow-visible" : "overflow-hidden",
             id === "compare-reveal" && "!p-2 sm:!p-3",
             id === "anim-corner" && "!p-1 sm:!p-1.5 !pl-0 sm:!pl-0",
-            (id === "continuous-slider" || id === "anim-marquee") &&
+            (id === "continuous-slider" || id === "image-carousel") &&
               "!px-1 sm:!px-2"
           )}
         >

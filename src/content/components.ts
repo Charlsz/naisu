@@ -179,7 +179,7 @@ export const categories: ComponentCategory[] = [
     items: [
       { id: "reading-notebook", label: "Reading notebook" },
       { id: "cool-scrollbar", label: "Cool scrollbar" },
-      { id: "anim-marquee", label: "Marquee" },
+      { id: "image-carousel", label: "Image carousel" },
       { id: "continuous-slider", label: "Continuous slider" },
     ],
   },

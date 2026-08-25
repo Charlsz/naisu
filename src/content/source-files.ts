@@ -84,7 +84,7 @@ export const sourceFileById: Record<string, string> = {
   "anim-stamp-bell": "src/components/naisu/anim-stamp.tsx",
   "anim-headphone-naisu": "src/components/naisu/anim-headphone.tsx",
   "anim-flip": "src/components/naisu/anim-flip.tsx",
-  "anim-marquee": "src/components/naisu/anim-marquee.tsx",
+  "image-carousel": "src/components/naisu/image-carousel.tsx",
   "anim-snap": "src/components/naisu/anim-snap.tsx",
   "anim-glow": "src/components/naisu/anim-glow.tsx",
   "anim-transitions": "src/components/naisu/anim-transitions.tsx",

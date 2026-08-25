@@ -10,7 +10,6 @@ import { AnimFlip } from "@/components/naisu/anim-flip"
 import { AnimGlow } from "@/components/naisu/anim-glow"
 import { AnimHeadphone } from "@/components/naisu/anim-headphone"
 import { AnimHeartBurst } from "@/components/naisu/anim-heart-burst"
-import { AnimMarquee } from "@/components/naisu/anim-marquee"
 import { AnimPaper } from "@/components/naisu/anim-paper"
 import { AnimPulse } from "@/components/naisu/anim-pulse"
 import { AnimReact } from "@/components/naisu/anim-react"
@@ -22,6 +21,7 @@ import { AnimTransitions } from "@/components/naisu/anim-transitions"
 import { AnimTwist } from "@/components/naisu/anim-twist"
 import { AnimWalk } from "@/components/naisu/anim-walk"
 import { CssAnimHost } from "@/components/naisu/css-anim-host"
+import { ImageCarousel } from "@/components/naisu/image-carousel"
 import { cssAnimTips } from "@/content/css-anim-tips"
 import { Approval } from "@/components/naisu/approval"
 import { Attachment } from "@/components/naisu/attachment"
@@ -414,10 +414,19 @@ export function AnimFlipDemo() {
   )
 }
 
-export function AnimMarqueeDemo() {
+export function ImageCarouselDemo() {
   return (
-    <div className="flex h-full w-full min-w-0 max-w-full items-center px-1 sm:px-3">
-      <AnimMarquee className="w-full" />
+    <div className="flex h-full w-full min-w-0 max-w-full items-stretch px-1 sm:px-2">
+      <ImageCarousel
+        className="w-full"
+        slides={[
+          { src: "/carousel/1.jpg", alt: "Slide 1" },
+          { src: "/carousel/2.jpg", alt: "Slide 2" },
+          { src: "/carousel/3.jpg", alt: "Slide 3" },
+          { src: "/carousel/4.jpg", alt: "Slide 4" },
+          { src: "/carousel/5.jpg", alt: "Slide 5" },
+        ]}
+      />
     </div>
   )
 }
@@ -966,7 +975,7 @@ export const galleryDemos: Record<string, React.ComponentType> = {
   "anim-stamp-bell": AnimStampBellDemo,
   "anim-headphone-naisu": AnimHeadphoneNaisuDemo,
   "anim-flip": AnimFlipDemo,
-  "anim-marquee": AnimMarqueeDemo,
+  "image-carousel": ImageCarouselDemo,
   "anim-snap": AnimSnapDemo,
   "anim-glow": AnimGlowDemo,
   "anim-transitions": AnimTransitionsDemo,
