@@ -83,7 +83,8 @@ export const metadata: Metadata = {
     description,
     images: [
       {
-        url: "/urlpreview.png",
+        // ?v= busts crawler caches when the asset is recompressed in place.
+        url: "/urlpreview.png?v=2",
         width: 1200,
         height: 630,
         alt: "naisu — components, interactions, and experiments for the web",
@@ -95,7 +96,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: title.default,
     description,
-    images: ["/urlpreview.png"],
+    images: ["/urlpreview.png?v=2"],
   },
   robots: {
     index: true,
