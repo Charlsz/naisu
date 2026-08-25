@@ -60,11 +60,9 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "16x16 32x32 48x48", type: "image/x-icon" },
-      { url: "/naisu.ico", sizes: "16x16 32x32 48x48", type: "image/x-icon" },
-    ],
-    shortcut: "/favicon.ico",
+    // File conventions also emit these; kept as stable public fallbacks.
+    icon: [{ url: "/naisu.ico", sizes: "16x16 32x32 48x48", type: "image/x-icon" }],
+    shortcut: "/naisu.ico",
     apple: [{ url: "/naisu.png", type: "image/png" }],
   },
   openGraph: {
@@ -74,21 +72,13 @@ export const metadata: Metadata = {
     siteName: "naisu",
     title,
     description,
-    images: [
-      {
-        url: "/og.png",
-        width: 1200,
-        height: 630,
-        type: "image/png",
-        alt: "naisu · motion UI components",
-      },
-    ],
+    // Image comes from src/app/opengraph-image.png (hashed URL on deploy).
   },
   twitter: {
     card: "summary_large_image",
     title,
     description,
-    images: ["/og.png"],
+    // Image comes from src/app/twitter-image.png (hashed URL on deploy).
   },
   robots: {
     index: true,
