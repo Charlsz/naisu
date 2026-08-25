@@ -3,8 +3,8 @@
 import * as React from "react"
 import {
   AnimatePresence,
+  animate,
   motion,
-  useMotionTemplate,
   useMotionValue,
   useSpring,
   useTransform,
@@ -16,6 +16,10 @@ import {
 } from "lucide-react"
 
 import { CompareReveal } from "@/components/motiq/compare-reveal"
+import { CursorSpotlight } from "@/components/naisu/cursor-spotlight"
+import { HoverBorder } from "@/components/naisu/hover-border"
+import { CoolScrollbar } from "@/components/naisu/cool-scrollbar"
+import { ReadingNotebook, LOREM_PARAGRAPHS } from "@/components/naisu/reading-notebook"
 import { ClickShockwave } from "@/components/ui/click-shockwave"
 import { ContinuousSlider } from "@/components/ui/continuous-slider"
 import { springs } from "@/lib/motion"
@@ -111,29 +115,16 @@ export function HoverRevealDemo() {
   )
 }
 
-/** 03 */
+/** Soft vignette spotlight that follows the pointer. */
 export function CursorSpotlightDemo() {
-  const mx = useMotionValue(50)
-  const my = useMotionValue(50)
-  const sx = useSpring(mx, springs.soft)
-  const sy = useSpring(my, springs.soft)
-  const bg = useMotionTemplate`radial-gradient(120px circle at ${sx}% ${sy}%, rgba(253,253,252,0.5), transparent 55%)`
-
   return (
-    <div
-      className="relative size-full overflow-hidden bg-[#111111]"
-      onPointerMove={(e) => {
-        const r = e.currentTarget.getBoundingClientRect()
-        mx.set(((e.clientX - r.left) / r.width) * 100)
-        my.set(((e.clientY - r.top) / r.height) * 100)
-      }}
-    >
-      <motion.div className="absolute inset-0" style={{ background: bg }} />
+    <div className="size-full min-h-0 p-2">
+      <CursorSpotlight className="size-full rounded-xl" />
     </div>
   )
 }
 
-/** 04 — counts forever; resets only on remount / reload */
+/** 04 - counts forever; resets only on remount / reload */
 export function NumberCounterDemo() {
   const [n, setN] = React.useState(1)
 
@@ -162,7 +153,7 @@ export function NumberCounterDemo() {
   )
 }
 
-/** 05 Toggle — press only */
+/** 05 Toggle - press only */
 export function ToggleDemo() {
   const [on, setOn] = React.useState(false)
 
@@ -188,7 +179,7 @@ export function ToggleDemo() {
   )
 }
 
-/** 06a — Ink stroke (ma / brush feel) */
+/** 06a - Ink stroke (ma / brush feel) */
 export function CheckboxInkDemo() {
   const [checked, setChecked] = React.useState(false)
 
@@ -217,7 +208,7 @@ export function CheckboxInkDemo() {
   )
 }
 
-/** 06b — Seal / hanko press */
+/** 06b - Seal / hanko press */
 export function CheckboxSealDemo() {
   const [checked, setChecked] = React.useState(false)
 
@@ -241,14 +232,14 @@ export function CheckboxSealDemo() {
           animate={{ opacity: checked ? 1 : 0, scale: checked ? 1 : 0.6 }}
           transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
         >
-          済
+          OK
         </motion.span>
       </button>
     </div>
   )
 }
 
-/** 06c — Bloom fill from corner */
+/** 06c - Bloom fill from corner */
 export function CheckboxBloomDemo() {
   const [checked, setChecked] = React.useState(false)
 
@@ -308,7 +299,7 @@ export function LoadingIndicatorDemo() {
   )
 }
 
-/** 08 Progress — slower; margins inside grid; % follows tip */
+/** 08 Progress - slower; margins inside grid; % follows tip */
 export function ProgressIndicatorDemo() {
   const [p, setP] = React.useState(8)
 
@@ -328,7 +319,7 @@ export function ProgressIndicatorDemo() {
   }, [])
 
   return (
-    <div className="flex size-full items-center px-8 py-8">
+    <div className="flex size-full items-center justify-center px-8 py-8">
       <div className="relative h-8 w-full max-w-full">
         <div
           className="absolute top-1/2 left-0 h-[3px] -translate-y-1/2 rounded-full bg-[#111111]"
@@ -345,7 +336,7 @@ export function ProgressIndicatorDemo() {
   )
 }
 
-/** 09 Expanding search — real-ish demo, centered icon, thick border */
+/** 09 Expanding search - real-ish demo, centered icon, thick border */
 const SEARCH_ITEMS = [
   "Magnetic button",
   "Hover reveal",
@@ -457,7 +448,7 @@ export function ExpandingSearchDemo() {
   )
 }
 
-/** 10a — drops in from above the trigger */
+/** 10a - drops in from above the trigger */
 export function TooltipDropDemo() {
   const [show, setShow] = React.useState(false)
 
@@ -494,7 +485,7 @@ export function TooltipDropDemo() {
   )
 }
 
-/** 10b — soft spring from top with caret */
+/** 10b - soft spring from top with caret */
 export function TooltipSoftDemo() {
   const [show, setShow] = React.useState(false)
 
@@ -534,34 +525,73 @@ export function TooltipSoftDemo() {
   )
 }
 
-/** 11 Morphing carousel */
+/** 09 Morph carousel - slower morph + index updates when shape lands */
 export function CardTiltDemo() {
-  const shapes = [
+  // Circle radius = half the side (28 for 56×56), not 999 - interpolates cleanly
+  const frames = [
     { r: 8, w: 72, h: 48 },
-    { r: 999, w: 56, h: 56 },
+    { r: 28, w: 56, h: 56 },
     { r: 16, w: 96, h: 40 },
     { r: 4, w: 64, h: 64 },
   ]
-  const i = useCycle(shapes.length, 1600)
-  const s = shapes[i]
+  const [i, setI] = React.useState(0)
+  const ref = React.useRef<HTMLDivElement>(null)
+
+  React.useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    let cancelled = false
+    let frame = 0
+    let waitTimer = 0
+
+    async function loop() {
+      while (!cancelled && el) {
+        const next = (frame + 1) % frames.length
+        const target = frames[next]
+        // Advance the indicator as soon as this shape is the target
+        setI(next)
+        const controls = animate(
+          el,
+          {
+            width: `${target.w}px`,
+            height: `${target.h}px`,
+            borderRadius: `${target.r}px`,
+          },
+          { duration: 1.35, ease: [0.22, 1, 0.36, 1] }
+        )
+        await controls
+        if (cancelled) break
+        frame = next
+        await new Promise<void>((resolve) => {
+          waitTimer = window.setTimeout(resolve, 900)
+        })
+      }
+    }
+
+    void loop()
+    return () => {
+      cancelled = true
+      window.clearTimeout(waitTimer)
+    }
+  }, [])
 
   return (
     <div className="flex size-full items-center justify-center gap-4 p-8">
-      <motion.div
-        className="bg-[#111111]"
-        animate={{
-          width: s.w,
-          height: s.h,
-          borderRadius: s.r,
+      <div
+        ref={ref}
+        className="bg-[#111111] will-change-[width,height,border-radius]"
+        style={{
+          width: frames[0].w,
+          height: frames[0].h,
+          borderRadius: frames[0].r,
         }}
-        transition={{ type: "spring", stiffness: 260, damping: 22 }}
       />
       <div className="flex flex-col gap-1">
-        {shapes.map((_, idx) => (
+        {frames.map((_, idx) => (
           <span
             key={idx}
             className={cn(
-              "h-1 w-4 rounded-full",
+              "h-1 w-4 rounded-full transition-colors duration-300",
               idx === i ? "bg-[#111111]" : "bg-[#9C9C9B]/50"
             )}
           />
@@ -571,7 +601,7 @@ export function CardTiltDemo() {
   )
 }
 
-/** 12 Morphing icon — path morph play ↔ pause */
+/** 12 Morphing icon - path morph play ↔ pause */
 export function MorphingIconDemo() {
   const [play, setPlay] = React.useState(true)
 
@@ -667,29 +697,34 @@ export function TabsUnderlineDemo() {
   )
 }
 
-/** 03 Continuous slider — infinite horizontal loop */
+/** Continuous slider - full stage width */
 const SLIDER_ITEMS = [
   { id: "apple", name: "Apple" },
   { id: "google", name: "Google" },
   { id: "stripe", name: "Stripe" },
   { id: "nintendo", name: "Nintendo" },
+  { id: "figma", name: "Figma" },
+  { id: "linear", name: "Linear" },
+  { id: "vercel", name: "Vercel" },
+  { id: "notion", name: "Notion" },
 ]
 
 export function InfiniteSliderDemo() {
   return (
-    <div className="flex size-full items-center justify-center px-4">
+    <div className="flex h-full w-full min-w-0 max-w-full items-center px-1 sm:px-3">
       <ContinuousSlider
         items={SLIDER_ITEMS}
-        duration={48}
+        duration={42}
         hoverSlowdown={2.75}
-        gap={48}
+        gap={56}
         fade
+        className="w-full"
       />
     </div>
   )
 }
 
-/** 15 Click shockwave — expanding rings from pointer */
+/** 15 Click shockwave - expanding rings from pointer */
 export function ClickShockwaveDemo() {
   return (
     <div className="flex size-full items-center justify-center p-4">
@@ -698,23 +733,16 @@ export function ClickShockwaveDemo() {
   )
 }
 
-/** 11 Compare reveal (Motiq) */
+/** Compare reveal: same stage height as neighbors; media stays 16:10. */
 export function CompareRevealDemo() {
   return (
-    <div className="flex size-full items-center justify-center p-8">
+    <div className="flex size-full min-h-0 w-full items-center justify-center">
       <CompareReveal
-        className="h-full max-h-[220px] w-full max-w-md"
-        labels={["Before", "After"]}
-        before={
-          <div className="flex size-full items-center justify-center bg-[#9C9C9B] text-sm font-medium text-[#FDFDFC]">
-            Before
-          </div>
-        }
-        after={
-          <div className="flex size-full items-center justify-center bg-[#111111] text-sm font-medium text-[#FDFDFC]">
-            After
-          </div>
-        }
+        className="max-h-full w-full rounded-lg"
+        labels={["", ""]}
+        aria-label="Compare color and roughness maps"
+        before={{ src: "/texture_0.png", alt: "Earth color map" }}
+        after={{ src: "/texture_1.png", alt: "Earth roughness map" }}
       />
     </div>
   )
@@ -770,112 +798,49 @@ export function CircularProgressDemo() {
   )
 }
 
-/** 16 Hover border */
+/** Hover border - animated stroke on the card itself */
 export function HoverBorderDemo() {
   return (
-    <div className="flex size-full items-center justify-center p-8">
-      <div className="relative size-28 overflow-hidden rounded-2xl p-px">
-        <motion.div
-          className="absolute inset-[-40%]"
-          style={{
-            background:
-              "conic-gradient(from 0deg, transparent 40%, #111111 50%, transparent 60%)",
-          }}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 2.4, repeat: Infinity, ease: "linear" }}
-        />
-        <div className="relative flex size-full items-center justify-center rounded-[15px] bg-[#FDFDFC] text-[11px] text-[#111111]">
-          Border
-        </div>
-      </div>
+    <div className="flex size-full items-center justify-center p-4">
+      <HoverBorder label="Ship it" />
     </div>
   )
 }
 
-const SCROLL_COPY = `Naisu motion pieces —
-small enough to copy.
-
-Scroll this panel.
-Ticks on the right swell
-as you move — a soft fisheye.
-
-一
-二
-三
-四
-五
-
-When focus passes a line, it grows.
-When it leaves, it returns to a dot.
-
-Keep scrolling.`
-
-/** 14 Cool scrollbar — compact centered fisheye */
+/** Cool scrollbar: plain text + rail. Copy source is cool-scrollbar.tsx. */
 export function CoolScrollbarDemo() {
   const scrollerRef = React.useRef<HTMLDivElement>(null)
-  const [p, setP] = React.useState(0)
-  const lines = 16
-  const minW = 2
-  const maxW = 14
-  const sigma = 0.12
-
-  function sync() {
-    const el = scrollerRef.current
-    if (!el) return
-    const max = el.scrollHeight - el.clientHeight
-    setP(max > 0 ? Math.min(1, Math.max(0, el.scrollTop / max)) : 0)
-  }
-
-  React.useEffect(() => {
-    sync()
-  }, [])
-
-  function jumpTo(fraction: number) {
-    const el = scrollerRef.current
-    if (!el) return
-    const max = el.scrollHeight - el.clientHeight
-    el.scrollTo({ top: fraction * max, behavior: "smooth" })
-  }
+  const body = React.useMemo(
+    () => [...LOREM_PARAGRAPHS, ...LOREM_PARAGRAPHS, ...LOREM_PARAGRAPHS],
+    []
+  )
 
   return (
-    <div className="flex size-full items-center justify-center p-8">
-      <div className="relative h-[160px] w-full max-w-[220px] overflow-hidden rounded-2xl bg-[#FDFDFC]">
-        <div
-          ref={scrollerRef}
-          onScroll={sync}
-          className="naisu-demo-scroll size-full overflow-y-auto px-4 py-4 pr-10 text-[11px] leading-relaxed text-[#111111]"
-        >
-          <p className="whitespace-pre-wrap">{SCROLL_COPY}</p>
+    <div className="relative size-full min-h-0">
+      <div
+        ref={scrollerRef}
+        className="naisu-demo-scroll absolute inset-0 overflow-y-auto py-2 pr-12 pl-1 sm:pr-14"
+      >
+        <div className="space-y-3 text-[11px] leading-relaxed text-[#344054]">
+          {body.map((paragraph, i) => (
+            <p key={i}>{paragraph}</p>
+          ))}
         </div>
-
-        <nav
-          aria-label="Demo scroll"
-          className="absolute top-1/2 right-2 flex -translate-y-1/2 flex-col items-end gap-0.5"
-        >
-          {Array.from({ length: lines }, (_, i) => {
-            const t = i / (lines - 1)
-            const dist = Math.abs(t - p)
-            const falloff = Math.exp(-(dist * dist) / (2 * sigma * sigma))
-            const w = minW + (maxW - minW) * falloff
-            return (
-              <motion.button
-                key={i}
-                type="button"
-                aria-label={`Go to ${Math.round(t * 100)}%`}
-                onClick={() => jumpTo(t)}
-                className="block h-0.5 rounded-full bg-[#9C9C9B] hover:bg-[#111111]"
-                animate={{ width: w }}
-                transition={{
-                  type: "spring",
-                  stiffness: 400,
-                  damping: 36,
-                  mass: 0.4,
-                }}
-              />
-            )
-          })}
-        </nav>
       </div>
+      <CoolScrollbar containerRef={scrollerRef} lines={26} />
     </div>
   )
 }
+
+/** Reading notebook: fake site chrome + article (no cool rail). */
+export function ReadingNotebookDemo() {
+  return (
+    <div className="flex size-full min-h-0 items-stretch justify-center p-1.5 sm:p-2">
+      <ReadingNotebook
+        paragraphs={[...LOREM_PARAGRAPHS, ...LOREM_PARAGRAPHS]}
+        className="h-full max-h-full w-full"
+      />
+    </div>
+  )
+}
+

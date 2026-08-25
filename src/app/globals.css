@@ -116,7 +116,7 @@
     @apply border-border outline-ring/50;
   }
   html {
-    @apply scroll-smooth font-sans;
+    @apply font-sans;
     scrollbar-width: none;
   }
   html::-webkit-scrollbar {
@@ -147,6 +147,91 @@
 }
 .naisu-demo-scroll::-webkit-scrollbar {
   display: none;
+}
+
+/* ── Naisu keyframes ─────────────────────────────────────────── */
+
+@keyframes naisu-pixel-on {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  40%,
+  60% {
+    opacity: 1;
+  }
+}
+
+@keyframes naisu-shimmer-text {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@keyframes naisu-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes naisu-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes naisu-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.15;
+  }
+}
+
+@keyframes naisu-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Shimmering label used by loading / thinking states. */
+.naisu-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    #9c9c9b 0%,
+    #9c9c9b 38%,
+    #111111 50%,
+    #9c9c9b 62%,
+    #9c9c9b 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: naisu-shimmer-text 1.9s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .naisu-shimmer {
+    animation: none;
+    background-image: none;
+    color: #9c9c9b;
+  }
 }
 
 .dark {

@@ -60,7 +60,11 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   icons: {
-    icon: [{ url: "/naisu_white.ico", type: "image/x-icon" }],
+    icon: [
+      { url: "/naisu.ico", type: "image/x-icon" },
+      { url: "/naisu.png", type: "image/png" },
+    ],
+    apple: [{ url: "/naisu.png", type: "image/png" }],
   },
   openGraph: {
     type: "website",
@@ -75,7 +79,7 @@ export const metadata: Metadata = {
         width: 1200,
         height: 630,
         type: "image/png",
-        alt: "naisu — motion UI components",
+        alt: "naisu · motion UI components",
       },
     ],
   },

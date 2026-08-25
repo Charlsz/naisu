@@ -20,15 +20,33 @@ import {
   LoadingIndicatorDemo,
   MagneticButtonDemo,
   NumberCounterDemo,
+  ReadingNotebookDemo,
   TabsPillDemo,
   TabsUnderlineDemo,
   ToggleDemo,
 } from "@/components/demos"
+import { galleryDemos } from "@/components/demos-gallery"
 import { CoolScrollbar } from "@/components/naisu/cool-scrollbar"
 import { SideNav } from "@/components/side-nav"
 import { SoundProvider } from "@/components/sound-provider"
-import { components } from "@/content/components"
+import { categories, categoryIds } from "@/content/components"
+import { cssAnimTips } from "@/content/css-anim-tips"
 import { componentSources } from "@/content/sources"
+
+const cssAnimSources = Object.fromEntries(
+  cssAnimTips.map((tip) => [
+    tip.id,
+    `/* ${tip.label} */\n${tip.css}\n\n${tip.html}`,
+  ])
+) as Record<string, string>
+
+function panelCode(id: string, label: string, hint?: string) {
+  return (
+    componentSources[id] ??
+    cssAnimSources[id] ??
+    (hint ? `// ${label} · ${hint}` : `// ${label}`)
+  )
+}
 
 const demos: Record<string, React.ComponentType> = {
   "magnetic-button": MagneticButtonDemo,
@@ -48,7 +66,9 @@ const demos: Record<string, React.ComponentType> = {
   "circular-progress": CircularProgressDemo,
   "hover-border": HoverBorderDemo,
   "cool-scrollbar": CoolScrollbarDemo,
+  "reading-notebook": ReadingNotebookDemo,
   "click-shockwave": ClickShockwaveDemo,
+  ...galleryDemos,
 }
 
 function useActiveSection(ids: string[]) {
@@ -61,7 +81,6 @@ function useActiveSection(ids: string[]) {
       const maxScroll =
         document.documentElement.scrollHeight - window.innerHeight
 
-      // Edge cases: pin first / last when you're at the page ends
       if (window.scrollY <= 8) {
         setActive(ids[0])
         return
@@ -71,7 +90,6 @@ function useActiveSection(ids: string[]) {
         return
       }
 
-      // Prefer the section whose top is nearest a line ~20% down the viewport
       const marker = window.innerHeight * 0.22
       let best = ids[0]
       let bestScore = Number.POSITIVE_INFINITY
@@ -80,9 +98,7 @@ function useActiveSection(ids: string[]) {
         const el = document.getElementById(id)
         if (!el) continue
         const top = el.getBoundingClientRect().top
-        // Sections that have crossed the marker score better
-        const score =
-          top <= marker ? marker - top : (top - marker) * 1.35
+        const score = top <= marker ? marker - top : (top - marker) * 1.35
         if (score < bestScore) {
           bestScore = score
           best = id
@@ -105,7 +121,7 @@ function useActiveSection(ids: string[]) {
 }
 
 export default function HomePage() {
-  const ids = components.map((c) => c.id)
+  const ids = React.useMemo(() => categoryIds(), [])
   const activeId = useActiveSection(ids)
 
   return (
@@ -114,41 +130,50 @@ export default function HomePage() {
       <SideNav activeId={activeId} />
       <CoolScrollbar />
 
-      <main className="min-h-screen pr-8 pl-[11.5rem] pt-8 pb-16 sm:pl-52">
+      <main className="mx-auto min-h-screen max-w-[1680px] px-4 pt-28 pb-20 md:pl-52 md:pr-16 md:pt-10">
         <div id="top" className="sr-only">
           naisu
         </div>
 
-        <div className="flex flex-col gap-8">
-          {components.map((c) => {
-            const panels = c.variants?.length
-              ? c.variants.map((v) => {
+        <div className="flex flex-col gap-12">
+          {categories.map((cat, i) => {
+            const panels = cat.items.flatMap((item) => {
+              if (item.variants?.length) {
+                return item.variants.map((v) => {
                   const Demo = demos[v.id]
                   return {
                     id: v.id,
-                    hint: v.hint,
-                    code: componentSources[v.id] ?? `// ${c.label} — ${v.hint}`,
+                    hint: v.hint
+                      ? `${item.label} · ${v.hint}`
+                      : item.label,
+                    code: panelCode(v.id, item.label, v.hint),
                     children: Demo ? <Demo /> : null,
                   }
                 })
-              : [
-                  {
-                    id: c.id,
-                    code: componentSources[c.id] ?? `// ${c.label}`,
-                    children: (() => {
-                      const Demo = demos[c.id]
-                      return Demo ? <Demo /> : null
-                    })(),
-                  },
-                ]
+              }
+
+              const Demo = demos[item.id]
+              return [
+                {
+                  id: item.id,
+                  hint: item.label,
+                  code: panelCode(item.id, item.label),
+                  children: Demo ? <Demo /> : null,
+                },
+              ]
+            })
 
             return (
               <ComponentCard
-                key={c.id}
-                id={c.id}
-                index={c.index}
-                title={c.label}
+                key={cat.id}
+                id={cat.id}
+                index={String(i + 1).padStart(2, "0")}
+                title={cat.label}
                 panels={panels}
+                dense={cat.dense}
+                stage={cat.stage}
+                escape={cat.escape}
+                fullWidth={cat.fullWidth}
               />
             )
           })}

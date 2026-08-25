@@ -12,7 +12,7 @@ type ClickShockwaveProps = {
 }
 
 /**
- * Click shockwave — expanding ring from the pointer (demo / copy-paste).
+ * Click shockwave - expanding ring from the pointer (demo / copy-paste).
  */
 export function ClickShockwave({
   className,

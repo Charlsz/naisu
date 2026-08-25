@@ -1,9 +1,9 @@
 import type { Transition, Variants } from "motion/react"
 
 export const springs = {
-  snappy: { type: "spring", stiffness: 520, damping: 32, mass: 0.8 },
-  smooth: { type: "spring", stiffness: 280, damping: 28, mass: 0.9 },
-  soft: { type: "spring", stiffness: 180, damping: 24, mass: 1 },
+  snappy: { type: "spring", stiffness: 620, damping: 34, mass: 0.7 },
+  smooth: { type: "spring", stiffness: 380, damping: 30, mass: 0.8 },
+  soft: { type: "spring", stiffness: 240, damping: 26, mass: 0.9 },
 } as const satisfies Record<string, Transition>
 
 export const tweens = {

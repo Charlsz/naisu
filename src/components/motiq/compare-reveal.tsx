@@ -25,7 +25,7 @@ export interface CompareRevealProps extends Omit<React.HTMLAttributes<HTMLDivEle
   onPositionChange?: (pct: number) => void;
   /** Play the one-time self-demonstrating sweep on first viewport entry. */
   introSweep?: boolean;
-  /** Divider spring — 140/18 (ζ≈0.76) reads as elastic resistance. */
+  /** Divider spring - 140/18 (ζ≈0.76) reads as elastic resistance. */
   stiffness?: number;
   damping?: number;
   /** Corner chips, [before, after]. */
@@ -77,16 +77,11 @@ function renderSide(source: CompareRevealSource): React.ReactNode {
 /* -------------------------------------------------------------------------- */
 
 /**
- * CompareReveal — a before/after comparator whose divider chases the pointer
- * through a spring (k=140, c=18, ζ≈0.76), so the lag reads as elastic resistance
- * and the release as a soft snap. On first viewport entry it demonstrates itself
- * once — 50 → 96 → 4 → 50 over 2.6s — and replays only if that sweep was
- * interrupted. Double-click snaps home with the same spring.
+ * CompareReveal: before/after slider with a springy divider.
  *
- * The handle is a real button with slider semantics: arrows move 2%,
- * Shift+arrows 10%, Home/End pin the ends, and aria-valuenow tracks the reveal.
- * The reveal itself is a clip-path inset on a composited layer, so both sides are
- * painted once and never per frame. Clean-room original.
+ * Copy this file plus `@/lib/motiq` helpers it imports
+ * (`useControllableState`, `useReducedMotion`, `useVisibilityPause`)
+ * and `@/lib/utils` (`cn`).
  */
 export function CompareReveal({
   before,
@@ -165,7 +160,7 @@ export function CompareReveal({
     paint();
 
     if (!animate) {
-      // Still mode is fully functional — it just maps input 1:1 with no spring.
+      // Still mode is fully functional - it just maps input 1:1 with no spring.
       sim.current.introDone = true;
       sim.current.introActive = false;
       // Leaving the viewport mid-sweep re-arms the demo for the next entry.
@@ -227,7 +222,7 @@ export function CompareReveal({
   }, [animate]);
 
   // Every input path commits through state, and the spring target follows state
-  // — so a controlled parent that ignores the change keeps the divider put.
+  // - so a controlled parent that ignores the change keeps the divider put.
   const commit = React.useCallback(
     (next: number) => {
       const s = sim.current;
@@ -305,8 +300,8 @@ export function CompareReveal({
       onDoubleClick={() => commit(snapOnDoubleClick)}
       data-motion={still ? "static" : "animated"}
       className={cn(
-        "relative aspect-[16/10] w-full touch-pan-y select-none overflow-hidden rounded-[16px]",
-        "border border-[var(--color-border,#263449)] bg-[var(--color-bg-elevated,#0d1420)] cursor-ew-resize",
+        "relative aspect-[16/10] w-full touch-pan-y select-none overflow-hidden rounded-xl",
+        "bg-[#111111] cursor-ew-resize",
         className,
       )}
       {...props}
@@ -316,33 +311,32 @@ export function CompareReveal({
         {renderSide(before)}
       </div>
 
-      {([labels[0], labels[1]] as const).map((text, i) => (
-        <span
-          key={text + i}
-          ref={(el) => {
-            labelRefs.current[i] = el;
-          }}
-          aria-hidden="true"
-          className={cn(
-            "pointer-events-none absolute top-4 z-[8] rounded-full px-3 py-1.5 transition-opacity duration-300",
-            "border border-[rgba(160,186,224,0.3)] bg-[rgba(6,10,20,0.55)] backdrop-blur-[6px]",
-            "font-mono text-[10.5px] uppercase tracking-[0.12em] text-[#eef4ff]",
-            i === 0 ? "left-4" : "right-4",
-          )}
-        >
-          {text}
-        </span>
-      ))}
+      {([labels[0], labels[1]] as const).map((text, i) =>
+        text ? (
+          <span
+            key={text + i}
+            ref={(el) => {
+              labelRefs.current[i] = el;
+            }}
+            aria-hidden="true"
+            className={cn(
+              "pointer-events-none absolute top-4 z-[8] rounded-full px-3 py-1.5 transition-opacity duration-300",
+              "border border-[#FDFDFC]/25 bg-[#111111]/55 backdrop-blur-[6px]",
+              "text-[10.5px] uppercase tracking-[0.12em] text-[#FDFDFC]",
+              i === 0 ? "left-4" : "right-4",
+            )}
+          >
+            {text}
+          </span>
+        ) : null,
+      )}
 
-      {/* The rule itself carries no semantics (no role, no text) — it must NOT be
+      {/* The rule itself carries no semantics (no role, no text) - it must NOT be
           aria-hidden, because the interactive handle lives inside it. */}
       <div
         ref={dividerRef}
-        className="pointer-events-none absolute bottom-0 top-0 z-10 -ml-px w-0.5 will-change-[left]"
-        style={{
-          left: `${shown}%`,
-          background: "color-mix(in oklab, var(--color-signature, #ff6b5e) 85%, white)",
-        }}
+        className="pointer-events-none absolute bottom-0 top-0 z-10 -ml-px w-0.5 bg-[#FDFDFC] will-change-[left]"
+        style={{ left: `${shown}%` }}
       >
         <button
           ref={handleRef}
@@ -355,18 +349,13 @@ export function CompareReveal({
           aria-valuetext={`${shown}% ${labels[0]}`}
           onKeyDown={onKeyDown}
           className={cn(
-            "pointer-events-auto absolute left-1/2 top-1/2 grid h-[46px] w-[46px] -translate-x-1/2 -translate-y-1/2",
-            "cursor-ew-resize place-items-center rounded-full p-0 backdrop-blur-[4px] transition-shadow duration-200",
-            "border-2 border-[var(--color-signature,#ff6b5e)] text-[var(--color-signature,#ff6b5e)]",
-            "bg-[color-mix(in_oklab,var(--color-bg-elevated,#0d1420)_82%,transparent)]",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-signature,#ff6b5e)] focus-visible:ring-offset-2",
+            "pointer-events-auto absolute left-1/2 top-1/2 grid h-8 w-8 -translate-x-1/2 -translate-y-1/2",
+            "cursor-ew-resize place-items-center rounded-full p-0",
+            "border border-[#FDFDFC]/90 bg-[#111111]/55 text-[#FDFDFC] backdrop-blur-[3px]",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDFDFC]/60",
           )}
-          style={{
-            boxShadow:
-              "0 0 0 6px color-mix(in oklab, var(--color-signature, #ff6b5e) 18%, transparent), 0 0 26px color-mix(in oklab, var(--color-signature, #ff6b5e) 45%, transparent)",
-          }}
         >
-          <svg width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true">
+          <svg width="14" height="12" viewBox="0 0 18 14" fill="none" aria-hidden="true">
             <path d="M6 1 L1 7 L6 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             <path d="M12 1 L17 7 L12 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
