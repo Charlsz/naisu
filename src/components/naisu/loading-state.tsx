@@ -135,66 +135,44 @@ function WaveMark() {
   )
 }
 
-/** 5x5 pixel bloom: diamond opens from the center, blue only. */
-const BLOOM_FRAMES = [
-  [12],
-  [7, 11, 12, 13, 17],
-  [2, 6, 7, 8, 10, 11, 12, 13, 14, 16, 17, 18, 22],
-  [7, 11, 12, 13, 17],
-]
-
+/** Petals open from a center bud, like a bloom. */
 function BloomMark() {
   return (
-    <div className="grid size-[18px] grid-cols-5 gap-px">
-      {Array.from({ length: 25 }, (_, i) => (
+    <div className="relative size-[18px]">
+      {[0, 1, 2, 3, 4, 5].map((i) => (
         <span
           key={i}
-          className="size-[3px] rounded-[0.5px] bg-[#315FEA] naisu-load-bloom-cell"
+          className="naisu-load-bloom-petal absolute top-1/2 left-1/2 block h-[7px] w-[4.5px] -translate-x-1/2 rounded-full bg-[#315FEA]"
           style={
             {
-              "--a0": BLOOM_FRAMES[0].includes(i) ? 1 : 0.08,
-              "--a1": BLOOM_FRAMES[1].includes(i) ? 1 : 0.08,
-              "--a2": BLOOM_FRAMES[2].includes(i) ? 1 : 0.08,
-              "--a3": BLOOM_FRAMES[3].includes(i) ? 1 : 0.08,
+              "--rot": `${i * 60}deg`,
+              animationDelay: `${(i * 0.04).toFixed(2)}s`,
             } as React.CSSProperties
           }
         />
       ))}
+      <span className="absolute top-1/2 left-1/2 size-[5px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#315FEA]" />
     </div>
   )
 }
 
-/** 5x5 pixel flower: 4 petals + center, staggered pulse, blue only. */
-const FLOWER_PETALS = [
-  [2, 7],
-  [10, 11],
-  [17, 22],
-  [13, 14],
-]
-const FLOWER_CENTER = [12]
-
+/** Classic flower: rounded petals around a round center. */
 function FlowerMark() {
   return (
-    <div className="grid size-[18px] grid-cols-5 gap-px">
-      {Array.from({ length: 25 }, (_, i) => {
-        const petal = FLOWER_PETALS.findIndex((cells) => cells.includes(i))
-        const isCenter = FLOWER_CENTER.includes(i)
-        if (!isCenter && petal < 0) {
-          return <span key={i} className="size-[3px] rounded-[0.5px] bg-[#315FEA]/10" />
-        }
-        return (
-          <span
-            key={i}
-            className="size-[3px] rounded-[0.5px] bg-[#315FEA]"
-            style={{
-              opacity: isCenter ? 1 : 0.35,
-              animation: isCenter
-                ? undefined
-                : `naisu-load-flower-pixel 1.1s ease-in-out ${(petal * 0.12).toFixed(2)}s infinite`,
-            }}
-          />
-        )
-      })}
+    <div className="relative size-[18px]">
+      {[0, 1, 2, 3, 4].map((i) => (
+        <span
+          key={i}
+          className="naisu-load-flower-petal absolute top-1/2 left-1/2 size-[7px] -translate-x-1/2 -translate-y-1/2 rounded-[45%]"
+          style={
+            {
+              "--rot": `${i * 72}deg`,
+              animationDelay: `${(i * 0.08).toFixed(2)}s`,
+            } as React.CSSProperties
+          }
+        />
+      ))}
+      <span className="absolute top-1/2 left-1/2 z-[1] size-[5px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#315FEA]" />
     </div>
   )
 }
@@ -208,22 +186,19 @@ function JarMark() {
   )
 }
 
-/** Pixel arrow tip that taps once per cycle. */
+/** Mouse pointer that moves and clicks. */
 function PointerMark() {
   return (
-    <div className="relative size-[16px]">
-      <div className="naisu-load-pointer absolute top-0 left-0 grid grid-cols-3 gap-px">
-        {[1, 1, 0, 1, 0, 0, 1, 1, 0].map((on, i) => (
-          <span
-            key={i}
-            className={cn(
-              "size-[3.5px] rounded-[0.5px]",
-              on ? "bg-[#315FEA]" : "bg-transparent"
-            )}
-          />
-        ))}
-      </div>
-      <span className="naisu-load-pointer-dot absolute right-0 bottom-0 size-[3px] rounded-full bg-[#315FEA]" />
+    <div className="relative size-[18px]">
+      <span className="naisu-load-pointer-ring absolute top-[10px] left-[10px] size-[8px] rounded-full border border-[#315FEA]/45" />
+      <svg
+        className="naisu-load-pointer absolute top-0 left-0 size-[12px] text-[#315FEA]"
+        viewBox="0 0 16 16"
+        fill="currentColor"
+        aria-hidden
+      >
+        <path d="M2.2 1.1 13.4 8.2l-4.2.5 2.5 5.4-1.7.8-2.5-5.4-3.3 3.1z" />
+      </svg>
     </div>
   )
 }
@@ -289,18 +264,38 @@ const LOAD_CSS = `
   0%, 100% { transform: translateY(0); opacity: 0.35; }
   50% { transform: translateY(-4px); opacity: 1; }
 }
-.naisu-load-bloom-cell {
-  animation: naisu-load-bloom-pixel 1.35s ease-in-out infinite;
+.naisu-load-bloom-petal {
+  transform-origin: center bottom;
+  animation: naisu-load-bloom 1.2s cubic-bezier(0.34, 1.35, 0.64, 1) infinite;
 }
-@keyframes naisu-load-bloom-pixel {
-  0%, 100% { opacity: var(--a0); }
-  28% { opacity: var(--a1); }
-  55% { opacity: var(--a2); }
-  78% { opacity: var(--a3); }
+@keyframes naisu-load-bloom {
+  0%, 100% {
+    transform: translate(-50%, -50%) rotate(var(--rot)) translateY(-1px) scaleY(0.45) scaleX(0.7);
+    opacity: 0.35;
+  }
+  45% {
+    transform: translate(-50%, -50%) rotate(var(--rot)) translateY(-6px) scaleY(1) scaleX(1);
+    opacity: 1;
+  }
+  70% {
+    transform: translate(-50%, -50%) rotate(var(--rot)) translateY(-5px) scaleY(0.92) scaleX(0.95);
+    opacity: 0.9;
+  }
 }
-@keyframes naisu-load-flower-pixel {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
+.naisu-load-flower-petal {
+  background: #315FEA;
+  transform-origin: center center;
+  animation: naisu-load-flower 1.25s ease-in-out infinite;
+}
+@keyframes naisu-load-flower {
+  0%, 100% {
+    transform: translate(-50%, -50%) rotate(var(--rot)) translateY(-4px) scale(0.72);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(var(--rot)) translateY(-5.5px) scale(1);
+    opacity: 1;
+  }
 }
 .naisu-load-jar {
   height: 35%;
@@ -311,21 +306,23 @@ const LOAD_CSS = `
   50% { height: 72%; }
 }
 .naisu-load-pointer {
-  animation: naisu-load-pointer 1s ease-in-out infinite;
+  animation: naisu-load-pointer 1.05s ease-in-out infinite;
   transform-origin: top left;
+  filter: drop-shadow(0 0.5px 0 rgba(16,24,40,0.15));
 }
-.naisu-load-pointer-dot {
-  animation: naisu-load-pointer-dot 1s ease-in-out infinite;
+.naisu-load-pointer-ring {
+  animation: naisu-load-pointer-ring 1.05s ease-out infinite;
 }
 @keyframes naisu-load-pointer {
   0%, 100% { transform: translate(0, 0); }
-  45% { transform: translate(2px, 3px); }
-  55% { transform: translate(2px, 3px); }
+  40% { transform: translate(3px, 4px); }
+  55% { transform: translate(3px, 4px) scale(0.92); }
+  70% { transform: translate(3px, 4px); }
 }
-@keyframes naisu-load-pointer-dot {
-  0%, 40% { opacity: 0; transform: scale(0.4); }
-  55% { opacity: 1; transform: scale(1); }
-  100% { opacity: 0; transform: scale(0.4); }
+@keyframes naisu-load-pointer-ring {
+  0%, 35% { transform: scale(0.2); opacity: 0; }
+  45% { transform: scale(0.55); opacity: 0.55; }
+  100% { transform: scale(1.35); opacity: 0; }
 }
 .naisu-load-pulse-ring {
   animation: naisu-load-pulse-r 1.1s cubic-bezier(0.22, 1, 0.36, 1) infinite;
