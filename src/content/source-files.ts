@@ -1,6 +1,5 @@
 /**
  * Gallery id → project file shown in Copy / Code when a real component exists.
- * Kept in sync with scripts/sync-sources.mjs.
  */
 export const sourceFileById: Record<string, string> = {
   "continuous-slider": "src/components/ui/continuous-slider.tsx",

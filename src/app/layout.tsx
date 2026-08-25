@@ -28,40 +28,49 @@ function resolveSiteUrl() {
     return preview.startsWith("http") ? preview : `https://${preview}`
   }
 
-  // Production custom domain
   return "https://naisu.charlsz.tech"
 }
 
 const siteUrl = resolveSiteUrl()
 
-const title = "naisu"
+const siteName = "naisu"
+const title = {
+  default: "naisu · UI components, interactions & experiments",
+  template: "%s · naisu",
+}
 const description =
-  "UI components. Small, expressive pieces you can drop into any project."
+  "A growing collection of components, interactions, and experiments for the web."
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: {
-    default: title,
-    template: "%s · naisu",
-  },
+  title,
   description,
-  applicationName: "naisu",
+  applicationName: siteName,
   keywords: [
+    "naisu",
     "UI components",
-    "motion",
-    "Next.js",
-    "React",
-    "copy paste",
+    "React components",
+    "Next.js components",
+    "motion UI",
+    "interaction design",
+    "web experiments",
+    "copy paste components",
     "animation",
+    "Framer Motion",
+    "frontend",
+    "design engineering",
   ],
-  authors: [{ name: "naisu" }],
+  authors: [{ name: "naisu", url: siteUrl }],
   creator: "naisu",
+  publisher: "naisu",
+  category: "technology",
   alternates: {
     canonical: "/",
   },
   icons: {
-    // File conventions also emit these; kept as stable public fallbacks.
-    icon: [{ url: "/naisu.ico", sizes: "16x16 32x32 48x48", type: "image/x-icon" }],
+    icon: [
+      { url: "/naisu.ico", sizes: "16x16 32x32 48x48", type: "image/x-icon" },
+    ],
     shortcut: "/naisu.ico",
     apple: [{ url: "/naisu.png", type: "image/png" }],
   },
@@ -69,21 +78,81 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "/",
-    siteName: "naisu",
-    title,
+    siteName,
+    title: title.default,
     description,
-    // Image comes from src/app/opengraph-image.png (hashed URL on deploy).
+    images: [
+      {
+        url: "/urlpreview.png",
+        width: 1200,
+        height: 630,
+        alt: "naisu — components, interactions, and experiments for the web",
+        type: "image/png",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title,
+    title: title.default,
     description,
-    // Image comes from src/app/twitter-image.png (hashed URL on deploy).
+    images: ["/urlpreview.png"],
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
+  other: {
+    "theme-color": "#FDFDFC",
+  },
+}
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${siteUrl}/#website`,
+      url: siteUrl,
+      name: siteName,
+      description,
+      inLanguage: "en",
+      publisher: { "@id": `${siteUrl}/#organization` },
+    },
+    {
+      "@type": "Organization",
+      "@id": `${siteUrl}/#organization`,
+      name: siteName,
+      url: siteUrl,
+      logo: `${siteUrl}/naisu.png`,
+    },
+    {
+      "@type": "WebPage",
+      "@id": `${siteUrl}/#webpage`,
+      url: siteUrl,
+      name: title.default,
+      description,
+      isPartOf: { "@id": `${siteUrl}/#website` },
+      about: {
+        "@type": "SoftwareApplication",
+        name: siteName,
+        applicationCategory: "DeveloperApplication",
+        operatingSystem: "Web",
+        description,
+        offers: {
+          "@type": "Offer",
+          price: "0",
+          priceCurrency: "USD",
+        },
+      },
+    },
+  ],
 }
 
 export default function RootLayout({
@@ -94,6 +163,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full bg-[#FDFDFC] font-sans text-[#111111]">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         {children}
         <Analytics />
       </body>

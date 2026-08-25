@@ -3,10 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node scripts/sync-brand.mjs && node scripts/sync-sources.mjs && next dev",
-    "prebuild": "node scripts/sync-brand.mjs && node scripts/sync-sources.mjs",
-    "sync-brand": "node scripts/sync-brand.mjs",
-    "sync-sources": "node scripts/sync-sources.mjs",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
