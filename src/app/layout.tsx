@@ -35,11 +35,11 @@ const siteUrl = resolveSiteUrl()
 
 const siteName = "naisu"
 const title = {
-  default: "naisu · UI components, interactions & experiments",
+  default: "naisu · AI-native UI kit",
   template: "%s · naisu",
 }
 const description =
-  "A growing collection of components, interactions, and experiments for the web."
+  "Crafted primitives for agent and chat interfaces. Inter, three colors, product-grade motion."
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -163,7 +163,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full bg-[#FDFDFC] font-sans text-[#111111]">
+      <body className="min-h-full bg-background font-sans text-foreground">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

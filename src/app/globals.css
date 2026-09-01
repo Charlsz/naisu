@@ -2,8 +2,6 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -13,6 +11,7 @@
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -25,90 +24,36 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --color-color-warning-foreground: var(--color-warning-foreground);
-  --color-color-warning: var(--color-warning);
-  --color-color-surface-2: var(--color-surface-2);
-  --color-color-surface: var(--color-surface);
-  --color-color-success-foreground: var(--color-success-foreground);
-  --color-color-success: var(--color-success);
-  --color-color-signature: var(--color-signature);
-  --color-color-secondary-accent: var(--color-secondary-accent);
-  --color-color-neutral-foreground: var(--color-neutral-foreground);
-  --color-color-neutral: var(--color-neutral);
-  --color-color-muted: var(--color-muted);
-  --color-color-info-foreground: var(--color-info-foreground);
-  --color-color-info: var(--color-info);
-  --color-color-focus: var(--color-focus);
-  --color-color-fg-secondary: var(--color-fg-secondary);
-  --color-color-fg: var(--color-fg);
-  --color-color-error-foreground: var(--color-error-foreground);
-  --color-color-error: var(--color-error);
-  --color-color-code-fg: var(--color-code-fg);
-  --color-color-code-bg: var(--color-code-bg);
-  --color-color-border-strong: var(--color-border-strong);
-  --color-color-border: var(--color-border);
-  --color-color-bg-secondary: var(--color-bg-secondary);
-  --color-color-bg-elevated: var(--color-bg-elevated);
-  --color-color-bg: var(--color-bg);
-  --color-color-accent-text: var(--color-accent-text);
-  --color-color-accent-hover: var(--color-accent-hover);
-  --color-color-accent-fg: var(--color-accent-fg);
-  --color-color-accent: var(--color-accent);
+  --color-surface: var(--surface);
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --shadow-soft: 0 1px 2px rgba(26, 26, 26, 0.04), 0 8px 24px rgba(26, 26, 26, 0.06);
 }
 
 :root {
   --background: #fdfdfc;
-  --foreground: #111111;
+  --foreground: #1a1a1a;
   --card: #fdfdfc;
-  --card-foreground: #111111;
+  --card-foreground: #1a1a1a;
   --popover: #fdfdfc;
-  --popover-foreground: #111111;
-  --primary: #111111;
+  --popover-foreground: #1a1a1a;
+  --primary: #1a1a1a;
   --primary-foreground: #fdfdfc;
-  --secondary: #fdfdfc;
-  --secondary-foreground: #111111;
-  --muted: #fdfdfc;
+  --secondary: rgba(26, 26, 26, 0.06);
+  --secondary-foreground: #1a1a1a;
+  --muted: rgba(26, 26, 26, 0.04);
   --muted-foreground: #9c9c9b;
-  --accent: #fdfdfc;
-  --accent-foreground: #111111;
-  --destructive: #111111;
-  --border: #9c9c9b;
-  --input: #9c9c9b;
-  --ring: #111111;
-  --radius: 0.5rem;
-  --color-accent: #315fea;
-  --color-accent-fg: #ffffff;
-  --color-accent-hover: #244fd1;
-  --color-accent-text: #244fd1;
-  --color-bg: #f7f9fc;
-  --color-bg-elevated: #f0f4f9;
-  --color-bg-secondary: #f0f4f9;
-  --color-border: #dce4ef;
-  --color-border-strong: #c5d1e1;
-  --color-code-bg: #f0f4f9;
-  --color-code-fg: #2a3444;
-  --color-error: #d92d4a;
-  --color-error-foreground: #ffffff;
-  --color-fg: #101828;
-  --color-fg-secondary: #344054;
-  --color-focus: #315fea;
-  --color-info: #087dbd;
-  --color-info-foreground: #ffffff;
-  --color-muted: #667085;
-  --color-neutral: #475467;
-  --color-neutral-foreground: #ffffff;
-  --color-secondary-accent: #009fb3;
-  --color-signature: #e9564a;
-  --color-success: #128a55;
-  --color-success-foreground: #ffffff;
-  --color-surface: #ffffff;
-  --color-surface-2: #f8fafd;
-  --color-warning: #b86e00;
-  --color-warning-foreground: #ffffff;
+  --accent: rgba(26, 26, 26, 0.06);
+  --accent-foreground: #1a1a1a;
+  --surface: rgba(26, 26, 26, 0.04);
+  --destructive: #c41e3a;
+  --destructive-foreground: #fdfdfc;
+  --border: rgba(156, 156, 155, 0.45);
+  --input: rgba(156, 156, 155, 0.45);
+  --ring: #1a1a1a;
+  --radius: 0.75rem;
 }
 
 @layer base {
@@ -116,14 +61,10 @@
     @apply border-border outline-ring/50;
   }
   html {
-    @apply font-sans;
-    scrollbar-width: none;
-  }
-  html::-webkit-scrollbar {
-    display: none;
+    @apply font-sans scroll-smooth;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground text-[15px] leading-relaxed antialiased;
   }
   button,
   a,
@@ -132,21 +73,6 @@
   [data-clickable] {
     cursor: pointer;
   }
-  button:active,
-  a:active,
-  [role="button"]:active,
-  [role="switch"]:active,
-  [data-clickable]:active {
-    cursor: pointer;
-  }
-}
-
-/* Hide native scrollbar inside cool-scrollbar demo panel */
-.naisu-demo-scroll {
-  scrollbar-width: none;
-}
-.naisu-demo-scroll::-webkit-scrollbar {
-  display: none;
 }
 
 /* ── Naisu keyframes ─────────────────────────────────────────── */
@@ -209,13 +135,12 @@
   }
 }
 
-/* Shimmering label used by loading / thinking states. */
 .naisu-shimmer {
   background-image: linear-gradient(
     90deg,
     #9c9c9b 0%,
     #9c9c9b 38%,
-    #111111 50%,
+    #1a1a1a 50%,
     #9c9c9b 62%,
     #9c9c9b 100%
   );
@@ -234,34 +159,9 @@
   }
 }
 
-.dark {
-  --color-accent: #4f7cff;
-  --color-accent-fg: #080c14;
-  --color-accent-hover: #6f91ff;
-  --color-accent-text: #7f9fff;
-  --color-bg: #080c14;
-  --color-bg-elevated: #0d1420;
-  --color-bg-secondary: #0d1420;
-  --color-border: #263449;
-  --color-border-strong: #354863;
-  --color-code-bg: #0d1420;
-  --color-code-fg: #cbd5e1;
-  --color-error: #ff5c70;
-  --color-error-foreground: #2a0308;
-  --color-fg: #f8fafc;
-  --color-fg-secondary: #cbd5e1;
-  --color-focus: #4f7cff;
-  --color-info: #38bdf8;
-  --color-info-foreground: #04121f;
-  --color-muted: #9caabd;
-  --color-neutral: #b2bccd;
-  --color-neutral-foreground: #111827;
-  --color-secondary-accent: #22c7d9;
-  --color-signature: #ff6b5e;
-  --color-success: #32d583;
-  --color-success-foreground: #04150c;
-  --color-surface: #111827;
-  --color-surface-2: #192337;
-  --color-warning: #f6b94a;
-  --color-warning-foreground: #2a1a00;
+/* Subtle dot grid for demo stages */
+.naisu-stage-grid {
+  background-image: radial-gradient(rgba(26, 26, 26, 0.07) 1px, transparent 1px);
+  background-size: 16px 16px;
+  mask-image: radial-gradient(ellipse 85% 75% at 50% 45%, #000 30%, transparent 100%);
 }
