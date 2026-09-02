@@ -5,7 +5,7 @@ import { ArrowUpIcon } from "lucide-react"
 import { motion } from "motion/react"
 
 import { springs } from "@/lib/motion"
-import { cn } from "@/lib/utils"
+import { cn, focusRing } from "@/lib/utils"
 
 export type ConversationProps = {
   children?: React.ReactNode
@@ -36,45 +36,43 @@ export function Conversation({
   return (
     <div
       className={cn(
-        "flex size-full flex-col overflow-hidden rounded-xl bg-[#D9D9D9]/40 ring-1 ring-[#9C9C9B]/30",
+        "flex size-full flex-col overflow-hidden rounded-xl bg-surface ring-1 ring-border",
         className
       )}
     >
-      <div className="flex shrink-0 items-center gap-0.5 border-b border-[#9C9C9B]/25 px-1.5 py-1">
+      <div className="flex shrink-0 items-center gap-1 border-b border-border px-2 py-2">
         {tabs.map((item) => (
           <button
             key={item}
             type="button"
             onClick={() => setTab(item)}
-            className="relative rounded-lg px-1.5 py-0.5 text-[9px]"
+            className={cn("relative min-h-9 rounded-lg px-3 text-[13px]", focusRing)}
           >
             {tab === item ? (
               <motion.span
                 layoutId={`naisu-conversation-tab-${uid}`}
                 transition={springs.snappy}
-                className="absolute inset-0 rounded-lg bg-[#111111]"
+                className="absolute inset-0 rounded-lg bg-primary"
               />
             ) : null}
             <span
               className={cn(
                 "relative",
-                tab === item ? "text-[#FDFDFC]" : "text-[#9C9C9B]"
+                tab === item ? "text-primary-foreground" : "text-muted-foreground"
               )}
             >
               {item}
             </span>
           </button>
         ))}
-        <span className="ml-auto pr-1 font-mono text-[8px] text-[#9C9C9B]">
+        <span className="ml-auto pr-2 font-mono text-[12px] text-muted-foreground">
           naisu
         </span>
       </div>
 
-      <div className="naisu-demo-scroll flex-1 space-y-1.5 overflow-y-auto p-2">
-        {children}
-      </div>
+      <div className="flex-1 space-y-2 overflow-y-auto p-3">{children}</div>
 
-      <div className="flex shrink-0 items-center gap-1 border-t border-[#9C9C9B]/25 bg-[#FDFDFC]/60 p-1">
+      <div className="flex shrink-0 items-center gap-2 border-t border-border bg-background/80 p-2">
         <input
           value={value}
           onChange={(e) => setValue(e.target.value)}
@@ -82,7 +80,7 @@ export function Conversation({
             if (e.key === "Enter") submit()
           }}
           placeholder={placeholder}
-          className="min-w-0 flex-1 bg-transparent px-1.5 text-[10px] text-[#111111] outline-none placeholder:text-[#9C9C9B]"
+          className="min-h-11 min-w-0 flex-1 bg-transparent px-2 text-sm text-foreground outline-none placeholder:text-muted-foreground"
         />
         <motion.button
           type="button"
@@ -90,9 +88,12 @@ export function Conversation({
           whileTap={{ scale: 0.92 }}
           transition={springs.snappy}
           aria-label="Send"
-          className="flex size-5 shrink-0 items-center justify-center rounded-lg bg-[#111111] text-[#FDFDFC]"
+          className={cn(
+            "flex size-11 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground",
+            focusRing
+          )}
         >
-          <ArrowUpIcon className="size-3" strokeWidth={2.5} />
+          <ArrowUpIcon className="size-4" strokeWidth={2.5} />
         </motion.button>
       </div>
     </div>

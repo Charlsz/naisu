@@ -22,7 +22,7 @@ type Option = {
 
 function EntityChip({ name }: { name: string }) {
   return (
-    <span className="inline-flex items-center rounded-md bg-[#315FEA]/12 px-1.5 py-px text-[10px] font-medium text-[#244FD1]">
+    <span className="inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-[13px] font-medium text-foreground">
       {name}
     </span>
   )
@@ -39,9 +39,9 @@ function ValuePill({
     <span
       className={cn(
         "inline-flex items-center rounded-md px-1.5 py-px text-[10px] font-medium",
-        tone === "green" && "bg-[#128A55]/12 text-[#128A55]",
-        tone === "orange" && "bg-[#B86E00]/12 text-[#B86E00]",
-        tone === "neutral" && "bg-[#111111]/6 text-[#111111]"
+        tone === "green" && "bg-muted text-foreground",
+        tone === "orange" && "bg-muted text-muted-foreground",
+        tone === "neutral" && "bg-muted text-foreground"
       )}
     >
       {children}
@@ -61,7 +61,7 @@ const OPTIONS: Option[] = [
     ),
     short: "Patch parse() in place · ~12 min",
     signal: 3,
-    tone: "#128A55",
+    tone: "#1A1A1A",
     label: "High confidence",
     cta: "Accept",
     ctaTone: "accent",
@@ -76,7 +76,7 @@ const OPTIONS: Option[] = [
     ),
     short: "Extract validateId() helper",
     signal: 2,
-    tone: "#B86E00",
+    tone: "#9C9C9B",
     label: "Needs review",
     cta: "Configure",
     ctaTone: "primary",
@@ -117,9 +117,9 @@ function Meter({ signal, tone }: { signal: number; tone: string }) {
 }
 
 const CTA_CLASS: Record<CtaTone, string> = {
-  accent: "bg-[#315FEA] text-white hover:bg-[#244FD1]",
-  primary: "bg-[#111111] text-[#FDFDFC] hover:opacity-90",
-  success: "bg-[#128A55] text-white",
+  accent: "bg-primary text-primary-foreground hover:opacity-90",
+  primary: "bg-primary text-primary-foreground hover:opacity-90",
+  success: "bg-primary text-primary-foreground",
 }
 
 export type RecommendationProps = {
@@ -144,17 +144,17 @@ export function Recommendation({ className, onAccept }: RecommendationProps) {
   return (
     <div
       className={cn(
-        "w-full overflow-hidden rounded-2xl bg-[#FDFDFC] shadow-[0_1px_2px_rgba(16,24,40,0.04),0_8px_24px_rgba(16,24,40,0.06)]",
+        "w-full overflow-hidden rounded-2xl bg-background shadow-[var(--shadow-soft)] ring-1 ring-border",
         className
       )}
     >
       <div className="px-3 pt-3 pb-2.5">
-        <span className="text-[12px] font-medium text-[#111111]">
+        <span className="text-sm font-medium text-foreground">
           Want me to apply this fix?
         </span>
         <p
           key={active.key}
-          className="mt-1.5 min-h-[2.75rem] text-[11px] leading-relaxed text-[#667085]"
+          className="mt-2 min-h-[2.75rem] text-sm leading-relaxed text-muted-foreground"
           style={{ animation: "naisu-fade-up 180ms ease-out both" }}
         >
           {active.body}
@@ -170,8 +170,8 @@ export function Recommendation({ className, onAccept }: RecommendationProps) {
         }}
       >
         <div className="overflow-hidden">
-          <div className="border-t border-[#ECECEC] bg-[#F8FAFD] px-2 py-2">
-            <p className="px-1.5 pb-1 text-[10px] font-medium text-[#9C9C9B]">
+          <div className="border-t border-border bg-muted px-3 py-2">
+            <p className="px-1.5 pb-1 text-[13px] font-medium text-muted-foreground">
               Other options
             </p>
             {others.map(({ o, i }) => (
@@ -182,13 +182,13 @@ export function Recommendation({ className, onAccept }: RecommendationProps) {
                   setSelected(i)
                   setAccepted(false)
                 }}
-                className="flex w-full items-center gap-2 rounded-lg px-1.5 py-1.5 text-left transition-colors duration-100 hover:bg-[#315FEA]/6"
+                className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left transition-colors duration-100 hover:bg-background"
               >
                 <Meter signal={o.signal} tone={o.tone} />
-                <span className="min-w-0 flex-1 truncate text-[11px] text-[#111111]">
+                <span className="min-w-0 flex-1 truncate text-sm text-foreground">
                   {o.short}
                 </span>
-                <span className="shrink-0 text-[10px] text-[#9C9C9B]">
+                <span className="shrink-0 text-[13px] text-muted-foreground">
                   {o.label}
                 </span>
               </button>
@@ -197,10 +197,10 @@ export function Recommendation({ className, onAccept }: RecommendationProps) {
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-2 border-t border-[#ECECEC] bg-[#FDFDFC] px-3 py-2">
+      <div className="flex items-center justify-between gap-2 border-t border-border bg-background px-4 py-3">
         <span className="flex min-w-0 items-center gap-2">
           <Meter signal={active.signal} tone={active.tone} />
-          <span className="truncate text-[11px] font-medium text-[#667085]">
+          <span className="truncate text-sm font-medium text-muted-foreground">
             {active.label}
           </span>
         </span>
@@ -212,10 +212,10 @@ export function Recommendation({ className, onAccept }: RecommendationProps) {
             disabled={accepted}
             onClick={() => setOpen((v) => !v)}
             className={cn(
-              "h-7 rounded-lg px-2.5 text-[11px] transition-colors",
+              "min-h-9 rounded-lg px-3 text-sm transition-colors",
               accepted
-                ? "pointer-events-none text-[#9C9C9B]/40"
-                : "bg-[#111111]/5 text-[#111111] hover:bg-[#111111]/8"
+                ? "pointer-events-none text-muted-foreground/40"
+                : "bg-muted text-foreground hover:bg-accent"
             )}
           >
             Alternatives
@@ -232,7 +232,7 @@ export function Recommendation({ className, onAccept }: RecommendationProps) {
               onAccept?.()
             }}
             className={cn(
-              "flex h-7 min-w-[76px] items-center justify-center gap-1 rounded-lg px-2.5 text-[11px] transition-colors",
+              "flex min-h-9 min-w-[88px] items-center justify-center gap-1 rounded-lg px-3 text-sm transition-colors",
               accepted ? CTA_CLASS.success : CTA_CLASS[active.ctaTone]
             )}
           >

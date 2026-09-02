@@ -54,21 +54,21 @@ export function ContextCards({
             animation: `naisu-fade-up 0.28s ease-out ${i * 0.06}s both`,
           }}
           className={cn(
-            "rounded-lg bg-[#FDFDFC] px-2 py-1.5 text-left transition-shadow",
+            "rounded-lg bg-background px-3 py-2 text-left transition-shadow ring-1",
             active === i
-              ? "shadow-[0_2px_8px_rgba(49,95,234,0.12)] ring-1 ring-[#315FEA]/45"
-              : "shadow-[0_1px_2px_rgba(16,24,40,0.04)] ring-1 ring-[#111111]/6"
+              ? "shadow-[var(--shadow-soft)] ring-foreground/20"
+              : "shadow-[var(--shadow-soft)] ring-border"
           )}
         >
           <div className="flex items-center gap-1.5">
-            <p className="truncate text-[10px] font-medium text-[#111111]">
+            <p className="truncate text-sm font-medium text-foreground">
               {chunk.title}
             </p>
-            <span className="ml-auto shrink-0 rounded px-1 font-mono text-[8px] text-[#9C9C9B] ring-1 ring-[#9C9C9B]/30">
+            <span className="ml-auto shrink-0 rounded px-1.5 font-mono text-[12px] text-muted-foreground ring-1 ring-border">
               {chunk.source}
             </span>
           </div>
-          <p className="mt-0.5 truncate text-[9px] text-[#9C9C9B]">
+          <p className="mt-1 truncate text-[13px] text-muted-foreground">
             {chunk.body}
           </p>
         </motion.button>

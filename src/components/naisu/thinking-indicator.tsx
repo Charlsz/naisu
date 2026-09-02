@@ -1,19 +1,13 @@
 "use client"
 
 import * as React from "react"
-import {
-  BrainIcon,
-  ChevronDownIcon,
-  ListIcon,
-  SearchIcon,
-  TerminalIcon,
-} from "lucide-react"
+import { BrainIcon, ChevronDownIcon, ListIcon } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
 
 import { springs } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 
-export type ThinkingVariant = "Steps" | "Reasoning" | "Search" | "Coding"
+export type ThinkingVariant = "Steps" | "Reasoning"
 
 export type ThinkingStep = { label: string; done?: boolean }
 
@@ -48,28 +42,6 @@ const PRESETS: Record<
       "The guard runs too late",
       "Return early instead",
       "Signature stays stable",
-    ],
-  },
-  Search: {
-    icon: SearchIcon,
-    working: "Searching",
-    done: (s) => `Searched for ${s}s`,
-    trace: [
-      "grep parseModel",
-      "12 matches · 4 files",
-      "Open model.ts",
-      "Narrow to L18–42",
-    ],
-  },
-  Coding: {
-    icon: TerminalIcon,
-    working: "Writing code",
-    done: (s) => `Coded for ${s}s`,
-    trace: [
-      "model.ts +12 −3",
-      "parser.ts +4 −0",
-      "Run type check",
-      "12 tests pass",
     ],
   },
 }
@@ -124,7 +96,7 @@ export function ThinkingIndicator({
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-xl bg-[#FDFDFC] ring-1 ring-[#9C9C9B]/40",
+        "overflow-hidden rounded-xl bg-background ring-1 ring-border",
         className
       )}
     >
@@ -134,15 +106,15 @@ export function ThinkingIndicator({
           setTouched(true)
           setOpen((v) => !v)
         }}
-        className="flex w-full items-center gap-1.5 px-2.5 py-1.5 text-left"
+        className="flex min-h-11 w-full items-center gap-2 px-3 py-2 text-left"
       >
-        <Icon className="size-3 shrink-0 text-[#9C9C9B]" strokeWidth={2.25} />
+        <Icon className="size-4 shrink-0 text-muted-foreground" strokeWidth={2.25} />
         {done ? (
-          <span className="flex-1 truncate text-[10px] text-[#9C9C9B]">
+          <span className="flex-1 truncate text-sm text-muted-foreground">
             {preset.done(seconds)}
           </span>
         ) : (
-          <span className="naisu-shimmer flex-1 truncate text-[10px] font-medium">
+          <span className="naisu-shimmer flex-1 truncate text-sm font-medium">
             {preset.working}…
           </span>
         )}
@@ -151,7 +123,7 @@ export function ThinkingIndicator({
           transition={springs.snappy}
           className="shrink-0"
         >
-          <ChevronDownIcon className="size-3 text-[#9C9C9B]" strokeWidth={2.5} />
+          <ChevronDownIcon className="size-4 text-muted-foreground" strokeWidth={2.5} />
         </motion.span>
       </button>
 
@@ -162,29 +134,27 @@ export function ThinkingIndicator({
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={springs.soft}
-            className="overflow-hidden border-t border-[#9C9C9B]/20"
+            className="overflow-hidden border-t border-border"
           >
-            <ul className="flex flex-col gap-1 px-2.5 py-1.5">
+            <ul className="flex flex-col gap-1.5 px-3 py-2">
               {trace.slice(0, Math.max(count, 1)).map((line, i) => (
                 <li
                   key={line}
-                  className="flex items-center gap-1.5"
+                  className="flex items-center gap-2"
                   style={{ animation: "naisu-fade-up 0.24s ease-out both" }}
                 >
                   <span
                     className={cn(
-                      "size-1 shrink-0 rounded-full",
-                      i < count - 1 || done
-                        ? "bg-[#111111]"
-                        : "bg-[#9C9C9B]/60"
+                      "size-1.5 shrink-0 rounded-full",
+                      i < count - 1 || done ? "bg-foreground" : "bg-muted-foreground/60"
                     )}
                   />
                   <span
                     className={cn(
-                      "truncate text-[9px]",
+                      "truncate text-[13px]",
                       i === count - 1 && !done
-                        ? "text-[#111111]"
-                        : "text-[#9C9C9B]"
+                        ? "text-foreground"
+                        : "text-muted-foreground"
                     )}
                   >
                     {line}

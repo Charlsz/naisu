@@ -74,11 +74,11 @@ function MotionTabs({
 }
 
 const listVariants = cva(
-  "relative inline-flex w-fit items-center rounded-md border border-[#111111] p-0.5 text-[#9C9C9B] group-data-horizontal/tabs:h-8",
+  "relative inline-flex w-fit items-center rounded-lg border border-border p-0.5 text-muted-foreground group-data-horizontal/tabs:h-10",
   {
     variants: {
       variant: {
-        default: "bg-[#FDFDFC]",
+        default: "bg-background",
       },
     },
     defaultVariants: { variant: "default" },
@@ -114,7 +114,7 @@ function MotionTabsTrigger({
       data-slot="motion-tabs-trigger"
       value={value}
       className={cn(
-        "relative z-10 inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center rounded-sm px-2.5 text-xs font-medium whitespace-nowrap text-[#9C9C9B] transition-colors hover:text-[#111111] focus-visible:outline-none data-active:text-[#111111]",
+        "relative z-10 inline-flex h-[calc(100%-2px)] min-h-9 flex-1 items-center justify-center rounded-md px-3 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background data-active:text-foreground",
         className
       )}
       {...props}
@@ -122,7 +122,7 @@ function MotionTabsTrigger({
       {isActive && !reduce && (
         <motion.span
           layoutId={layoutId}
-          className="absolute inset-0 -z-10 rounded-sm bg-[#111111]/8"
+          className="absolute inset-0 -z-10 rounded-md bg-muted"
           transition={getSpring(preset)}
         />
       )}

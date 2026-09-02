@@ -20,9 +20,9 @@ type Mode = "idle" | "thinking" | "streaming" | "result"
 
 const iconCls = "size-3 shrink-0"
 const control =
-  "inline-flex h-6 shrink-0 items-center gap-0.5 rounded-full px-2 text-[10px] text-[#111111] transition-colors hover:bg-[#315FEA]/8 active:scale-[0.96]"
+  "inline-flex min-h-9 shrink-0 items-center gap-1 rounded-full px-3 text-[13px] text-foreground transition-colors hover:bg-muted active:scale-[0.96]"
 const primary =
-  "inline-flex h-6 shrink-0 items-center gap-0.5 rounded-full bg-[#315FEA] px-2 text-[10px] text-white active:scale-[0.96]"
+  "inline-flex min-h-9 shrink-0 items-center gap-1 rounded-full bg-primary px-3 text-[13px] text-primary-foreground active:scale-[0.96]"
 
 export type SelectionActionsProps = {
   className?: string
@@ -125,11 +125,11 @@ export function SelectionActions({ className }: SelectionActionsProps) {
   return (
     <div className={cn("w-full max-w-[260px]", className)}>
       <div ref={hostRef} className="relative select-none pb-11">
-        <p className="text-[11px] leading-snug text-[#344054]">
+        <p className="text-sm leading-snug text-muted-foreground">
           {LEAD}
           <span
             ref={selectionRef}
-            className="box-decoration-clone rounded-[3px] bg-[#315FEA]/14 text-[#111111]"
+            className="box-decoration-clone rounded-[3px] bg-muted text-foreground"
           >
             {selectionText}
           </span>
@@ -144,11 +144,11 @@ export function SelectionActions({ className }: SelectionActionsProps) {
             pointerEvents: visible ? "auto" : "none",
           }}
         >
-          <div className="flex h-8 w-fit max-w-[min(100vw-32px,260px)] items-center gap-0.5 overflow-hidden rounded-full bg-[#FDFDFC] p-0.5 shadow-[0_4px_16px_rgba(16,24,40,0.12)] ring-1 ring-[#101828]/8">
+          <div className="flex min-h-11 w-fit max-w-[min(100vw-32px,280px)] items-center gap-1 overflow-hidden rounded-full bg-background p-1 shadow-[var(--shadow-soft)] ring-1 ring-border">
             {busy ? (
-              <span className="inline-flex h-6 items-center gap-1 px-2 text-[10px] text-[#667085]">
+              <span className="inline-flex min-h-9 items-center gap-1.5 px-3 text-[13px] text-muted-foreground">
                 <span
-                  className="size-2.5 shrink-0 rounded-full border border-[#C5D1E1] border-t-[#315FEA]"
+                  className="size-3 shrink-0 rounded-full border border-muted-foreground border-t-foreground"
                   style={{ animation: "naisu-spin 700ms linear infinite" }}
                 />
                 {action}…
@@ -183,7 +183,7 @@ export function SelectionActions({ className }: SelectionActionsProps) {
                   type="button"
                   aria-label="Retry"
                   onClick={() => run(action)}
-                  className="flex size-6 items-center justify-center rounded-full text-[#9C9C9B] hover:bg-[#111111]/5"
+                  className="flex size-9 items-center justify-center rounded-full text-muted-foreground hover:bg-muted"
                 >
                   <RefreshCwIcon className={iconCls} strokeWidth={2} />
                 </button>
@@ -204,7 +204,7 @@ export function SelectionActions({ className }: SelectionActionsProps) {
                   type="button"
                   aria-label="Send"
                   onClick={() => run("Improve")}
-                  className="flex size-6 items-center justify-center rounded-full bg-[#315FEA] text-white"
+                  className="flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground"
                 >
                   <ArrowUpIcon className="size-3" strokeWidth={2.4} />
                 </button>

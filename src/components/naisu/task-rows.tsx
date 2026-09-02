@@ -38,7 +38,7 @@ export function TaskRows({
   }, [autoplay, tasks.length])
 
   return (
-    <div className={cn("flex flex-col gap-1", className)}>
+    <div className={cn("flex flex-col gap-2", className)}>
       {tasks.map((task, i) => {
         const done = i < active
         const running = i === active
@@ -49,32 +49,29 @@ export function TaskRows({
             animate={{ scale: running ? 1 : 0.98 }}
             transition={springs.smooth}
             className={cn(
-              "flex items-center gap-1.5 rounded-full px-2 py-1 transition-colors",
+              "flex min-h-11 items-center gap-2 rounded-full px-3 py-2 transition-colors",
               running
-                ? "bg-[#111111] text-[#FDFDFC]"
-                : "bg-[#FDFDFC] text-[#111111] ring-1 ring-[#9C9C9B]/30"
+                ? "bg-primary text-primary-foreground"
+                : "bg-background text-foreground ring-1 ring-border"
             )}
           >
-            <span className="flex size-3 shrink-0 items-center justify-center">
+            <span className="flex size-4 shrink-0 items-center justify-center">
               {running ? (
                 <span
-                  className="block size-2.5 rounded-full border border-[#FDFDFC] border-t-transparent"
+                  className="block size-3 rounded-full border border-primary-foreground border-t-transparent"
                   style={{ animation: "naisu-spin 0.7s linear infinite" }}
                 />
               ) : done ? (
-                <CheckIcon
-                  className="size-2.5 text-[#111111]"
-                  strokeWidth={3}
-                />
+                <CheckIcon className="size-3.5 text-foreground" strokeWidth={3} />
               ) : (
-                <span className="size-1.5 rounded-full bg-[#9C9C9B]/60" />
+                <span className="size-2 rounded-full bg-muted-foreground/60" />
               )}
             </span>
 
             <span
               className={cn(
-                "truncate text-[10px]",
-                !running && !done && "text-[#9C9C9B]"
+                "truncate text-sm",
+                !running && !done && "text-muted-foreground"
               )}
             >
               {task.title}
@@ -83,8 +80,8 @@ export function TaskRows({
             {task.meta ? (
               <span
                 className={cn(
-                  "ml-auto shrink-0 text-[9px]",
-                  running ? "text-[#FDFDFC]/70" : "text-[#9C9C9B]"
+                  "ml-auto shrink-0 text-[13px]",
+                  running ? "text-primary-foreground/70" : "text-muted-foreground"
                 )}
               >
                 {task.meta}

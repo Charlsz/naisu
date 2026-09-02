@@ -95,15 +95,15 @@ export function OptionSelector({
         }}
         className={cn(
           "flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] text-[#111111]",
-          appearance === "soft" && "border border-transparent bg-[#315FEA]/8",
+          appearance === "soft" && "border border-transparent bg-muted",
           appearance === "ring" &&
-            "bg-[#FDFDFC] shadow-[0_1px_2px_rgba(16,24,40,0.05)] ring-1 ring-[#111111]/8",
+            "bg-background shadow-[var(--shadow-soft)] ring-1 ring-border",
           appearance === "field" &&
-            "w-full justify-between bg-[#FDFDFC] py-2 shadow-[0_1px_2px_rgba(16,24,40,0.05)] ring-1 ring-[#111111]/8"
+            "w-full justify-between bg-background py-2 shadow-[var(--shadow-soft)] ring-1 ring-border"
         )}
       >
         {showDot ? (
-          <span className="size-1.5 shrink-0 rounded-full bg-[#315FEA]" />
+          <span className="size-2 shrink-0 rounded-full bg-foreground" />
         ) : null}
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.span
@@ -134,7 +134,7 @@ export function OptionSelector({
             exit={{ opacity: 0, y: -4, scale: 0.96 }}
             transition={springs.snappy}
             className={cn(
-              "absolute top-full z-10 mt-1 origin-top rounded-lg bg-[#FDFDFC] p-1 shadow-[0_8px_24px_rgba(16,24,40,0.1)] ring-1 ring-[#111111]/6",
+              "absolute top-full z-10 mt-1 origin-top rounded-lg bg-background p-1 shadow-[var(--shadow-soft)] ring-1 ring-border",
               menu === "end" && "right-0 min-w-[120px]",
               menu === "start" && "left-0 min-w-[130px]",
               menu === "stretch" && "right-0 left-0"
@@ -153,13 +153,13 @@ export function OptionSelector({
                     <motion.span
                       layoutId={highlightId}
                       transition={springs.smooth}
-                      className="absolute inset-0 rounded-md bg-[#315FEA]"
+                      className="absolute inset-0 rounded-md bg-primary"
                     />
                   ) : null}
                   <span
                     className={cn(
                       "relative flex-1 truncate",
-                      lit ? "text-[#FDFDFC]" : "text-[#111111]"
+                      lit ? "text-primary-foreground" : "text-foreground"
                     )}
                   >
                     {option.label}
@@ -168,7 +168,7 @@ export function OptionSelector({
                     <CheckIcon
                       className={cn(
                         "relative size-3 shrink-0",
-                        lit ? "text-[#FDFDFC]" : "text-[#9C9C9B]"
+                        lit ? "text-primary-foreground" : "text-muted-foreground"
                       )}
                       strokeWidth={3}
                     />

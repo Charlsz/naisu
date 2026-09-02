@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { cn } from "@/lib/utils"
+import { cn, focusRing } from "@/lib/utils"
 
 export type SettingsRow = {
   id: string
@@ -19,13 +19,16 @@ export function SettingsPanel({ rows, className }: SettingsPanelProps) {
   return (
     <div
       className={cn(
-        "divide-y divide-[#9C9C9B]/25 rounded-xl bg-[#FDFDFC] ring-1 ring-[#9C9C9B]/40",
+        "divide-y divide-border rounded-xl bg-background ring-1 ring-border",
         className
       )}
     >
       {rows.map((row) => (
-        <div key={row.id} className="relative flex items-center justify-between gap-2 px-2.5 py-2">
-          <span className="text-[11px] text-[#111111]">{row.label}</span>
+        <div
+          key={row.id}
+          className="relative flex min-h-12 items-center justify-between gap-3 px-4 py-3"
+        >
+          <span className="text-sm text-foreground">{row.label}</span>
           {row.control}
         </div>
       ))}
@@ -36,7 +39,6 @@ export function SettingsPanel({ rows, className }: SettingsPanelProps) {
 export type SettingsToggleProps = {
   defaultOn?: boolean
   onChange?: (on: boolean) => void
-  /** Flip on a timer so the panel reads as live. */
   autoplay?: boolean
   interval?: number
   className?: string
@@ -81,13 +83,14 @@ export function SettingsToggle({
         onChange?.(!on)
       }}
       className={cn(
-        "flex h-4 w-7 shrink-0 items-center rounded-full p-0.5",
+        "flex h-6 w-11 shrink-0 items-center rounded-full p-0.5 transition-colors",
+        on ? "bg-primary" : "bg-muted-foreground/35",
+        focusRing,
         className
       )}
-      style={{ backgroundColor: on ? "#111111" : "rgba(156,156,155,0.35)" }}
     >
       <span
-        className="block size-3 rounded-full bg-[#FDFDFC]"
+        className="block size-5 rounded-full bg-background transition-[margin] duration-200"
         style={{ marginLeft: on ? "auto" : 0 }}
       />
     </button>

@@ -11,7 +11,7 @@ import {
 import { AnimatePresence, motion } from "motion/react"
 
 import { springs } from "@/lib/motion"
-import { cn } from "@/lib/utils"
+import { cn, focusRing } from "@/lib/utils"
 
 export type PromptModel = { id: string; label: string }
 
@@ -54,7 +54,7 @@ export function PromptInput({
   return (
     <div
       className={cn(
-        "relative flex flex-col rounded-xl bg-[#FDFDFC] p-1.5 ring-1 ring-[#9C9C9B]/40",
+        "relative flex flex-col rounded-xl bg-background p-2 ring-1 ring-border",
         className
       )}
     >
@@ -65,26 +65,24 @@ export function PromptInput({
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={springs.soft}
-            className="flex flex-wrap gap-1 overflow-hidden"
+            className="flex flex-wrap gap-2 overflow-hidden"
           >
             {files.map((file) => (
               <span
                 key={file}
-                className="mb-1 inline-flex items-center gap-1 rounded-lg px-1.5 py-0.5 ring-1 ring-[#9C9C9B]/30"
+                className="mb-1 inline-flex items-center gap-1.5 rounded-lg px-2 py-1 ring-1 ring-border"
                 style={{ animation: "naisu-pop-in 0.2s ease-out both" }}
               >
-                <span className="font-mono text-[9px] text-[#111111]">
-                  {file}
-                </span>
+                <span className="font-mono text-[13px] text-foreground">{file}</span>
                 <button
                   type="button"
                   onClick={() =>
                     setFiles((prev) => prev.filter((f) => f !== file))
                   }
                   aria-label={`Remove ${file}`}
-                  className="flex text-[#9C9C9B] hover:text-[#111111]"
+                  className={cn("flex text-muted-foreground hover:text-foreground", focusRing)}
                 >
-                  <XIcon className="size-2.5" strokeWidth={2.5} />
+                  <XIcon className="size-3.5" strokeWidth={2.5} />
                 </button>
               </span>
             ))}
@@ -103,10 +101,10 @@ export function PromptInput({
         }}
         placeholder={placeholder}
         rows={2}
-        className="resize-none bg-transparent px-1.5 py-0.5 text-[10px] leading-relaxed text-[#111111] outline-none placeholder:text-[#9C9C9B]"
+        className="resize-none bg-transparent px-2 py-1 text-sm leading-relaxed text-foreground outline-none placeholder:text-muted-foreground"
       />
 
-      <div className="flex items-center gap-1 px-0.5">
+      <div className="flex items-center gap-2 px-1">
         <motion.button
           type="button"
           onClick={() =>
@@ -119,16 +117,22 @@ export function PromptInput({
           whileTap={{ scale: 0.92 }}
           transition={springs.snappy}
           aria-label="Attach"
-          className="flex size-5 items-center justify-center rounded-lg text-[#9C9C9B] transition-colors hover:bg-[#111111]/5 hover:text-[#111111]"
+          className={cn(
+            "flex size-11 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
+            focusRing
+          )}
         >
-          <PlusIcon className="size-3" strokeWidth={2.5} />
+          <PlusIcon className="size-4" strokeWidth={2.5} />
         </motion.button>
 
         <div className="relative">
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="flex items-center gap-0.5 rounded-lg px-1.5 py-0.5 text-[9px] text-[#9C9C9B] ring-1 ring-[#9C9C9B]/30 transition-colors hover:text-[#111111]"
+            className={cn(
+              "flex min-h-9 items-center gap-1 rounded-lg px-3 text-[13px] text-muted-foreground ring-1 ring-border transition-colors hover:text-foreground",
+              focusRing
+            )}
           >
             {activeModel.label}
             <motion.span
@@ -136,7 +140,7 @@ export function PromptInput({
               transition={springs.snappy}
               className="flex"
             >
-              <ChevronDownIcon className="size-2.5" strokeWidth={2.5} />
+              <ChevronDownIcon className="size-3.5" strokeWidth={2.5} />
             </motion.span>
           </button>
 
@@ -147,7 +151,7 @@ export function PromptInput({
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 4, scale: 0.98 }}
                 transition={springs.snappy}
-                className="absolute bottom-full left-0 z-10 mb-1 w-24 origin-bottom-left overflow-hidden rounded-lg bg-[#FDFDFC] p-0.5 ring-1 ring-[#9C9C9B]/40"
+                className="absolute bottom-full left-0 z-10 mb-1 w-28 origin-bottom-left overflow-hidden rounded-lg bg-background p-1 ring-1 ring-border"
               >
                 {models.map((item) => (
                   <li key={item.id}>
@@ -157,11 +161,14 @@ export function PromptInput({
                         setModel(item.id)
                         setOpen(false)
                       }}
-                      className="flex w-full items-center gap-1 rounded-md px-1.5 py-1 text-left text-[9px] text-[#111111] transition-colors hover:bg-[#111111]/5"
+                      className={cn(
+                        "flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-[13px] text-foreground transition-colors hover:bg-muted",
+                        focusRing
+                      )}
                     >
-                      <span className="flex size-2.5 shrink-0 items-center justify-center">
+                      <span className="flex size-3 shrink-0 items-center justify-center">
                         {item.id === model ? (
-                          <CheckIcon className="size-2.5" strokeWidth={3} />
+                          <CheckIcon className="size-3" strokeWidth={3} />
                         ) : null}
                       </span>
                       {item.label}
@@ -179,9 +186,12 @@ export function PromptInput({
           whileTap={{ scale: 0.92 }}
           transition={springs.snappy}
           aria-label="Send"
-          className="ml-auto flex size-5 items-center justify-center rounded-lg bg-[#111111] text-[#FDFDFC]"
+          className={cn(
+            "ml-auto flex size-11 items-center justify-center rounded-lg bg-primary text-primary-foreground",
+            focusRing
+          )}
         >
-          <ArrowUpIcon className="size-3" strokeWidth={2.5} />
+          <ArrowUpIcon className="size-4" strokeWidth={2.5} />
         </motion.button>
       </div>
     </div>

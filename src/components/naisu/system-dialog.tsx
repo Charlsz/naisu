@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "motion/react"
 import { XIcon } from "lucide-react"
 
 import { springs } from "@/lib/motion"
-import { cn } from "@/lib/utils"
+import { cn, focusRing } from "@/lib/utils"
 
 export type SystemDialogProps = {
   open: boolean
@@ -13,12 +13,10 @@ export type SystemDialogProps = {
   title: string
   description?: string
   children?: React.ReactNode
-  /** Use absolute overlay (gallery) vs fixed page overlay. */
   contained?: boolean
   className?: string
 }
 
-/** Modal dialog with backdrop, escape-to-close, and optional contained mode. */
 export function SystemDialog({
   open,
   onOpenChange,
@@ -50,10 +48,10 @@ export function SystemDialog({
       {open ? (
         <motion.div
           className={cn(
-            "z-50 flex items-center justify-center p-3",
+            "z-50 flex items-center justify-center p-4",
             contained
-              ? "absolute inset-0 bg-[#101828]/35 backdrop-blur-[2px]"
-              : "fixed inset-0 bg-[#101828]/40 backdrop-blur-[2px]"
+              ? "absolute inset-0 bg-foreground/35 backdrop-blur-[2px]"
+              : "fixed inset-0 bg-foreground/40 backdrop-blur-[2px]"
           )}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -70,21 +68,21 @@ export function SystemDialog({
             exit={{ opacity: 0, scale: 0.98, y: 4 }}
             transition={springs.snappy}
             className={cn(
-              "w-full max-w-[220px] rounded-2xl bg-[#FDFDFC] p-3.5 shadow-[0_16px_40px_rgba(16,24,40,0.18)] ring-1 ring-[#101828]/8",
+              "w-full max-w-sm rounded-2xl bg-background p-4 shadow-[var(--shadow-soft)] ring-1 ring-border",
               className
             )}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between gap-2">
+            <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p
                   id="naisu-dialog-title"
-                  className="text-[12px] font-medium text-[#111111]"
+                  className="text-sm font-medium text-foreground"
                 >
                   {title}
                 </p>
                 {description ? (
-                  <p className="mt-1 text-[10px] leading-relaxed text-[#667085]">
+                  <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
                     {description}
                   </p>
                 ) : null}
@@ -92,13 +90,16 @@ export function SystemDialog({
               <button
                 type="button"
                 onClick={() => onOpenChange(false)}
-                className="flex size-7 shrink-0 items-center justify-center rounded-lg text-[#9C9C9B] transition-colors hover:bg-[#111111]/5 hover:text-[#111111]"
+                className={cn(
+                  "flex size-11 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
+                  focusRing
+                )}
                 aria-label="Close"
               >
-                <XIcon className="size-3.5" strokeWidth={2.5} />
+                <XIcon className="size-4" strokeWidth={2.5} />
               </button>
             </div>
-            {children ? <div className="mt-3">{children}</div> : null}
+            {children ? <div className="mt-4">{children}</div> : null}
           </motion.div>
         </motion.div>
       ) : null}

@@ -3,7 +3,7 @@
 import { motion } from "motion/react"
 
 import { springs } from "@/lib/motion"
-import { cn } from "@/lib/utils"
+import { cn, focusRing } from "@/lib/utils"
 
 export type PermissionRequestProps = {
   title: string
@@ -23,21 +23,24 @@ export function PermissionRequest({
   return (
     <div
       className={cn(
-        "rounded-xl bg-[#FDFDFC] p-2.5 ring-1 ring-[#9C9C9B]/40",
+        "rounded-xl bg-background p-4 ring-1 ring-border",
         className
       )}
     >
-      <p className="text-[10px] font-medium text-[#111111]">{title}</p>
+      <p className="text-sm font-medium text-foreground">{title}</p>
       {description ? (
-        <p className="mt-0.5 text-[9px] text-[#9C9C9B]">{description}</p>
+        <p className="mt-1 text-[13px] text-muted-foreground">{description}</p>
       ) : null}
-      <div className="mt-2 flex gap-1.5">
+      <div className="mt-3 flex gap-2">
         <motion.button
           type="button"
           onClick={onDeny}
           whileTap={{ scale: 0.96 }}
           transition={springs.snappy}
-          className="flex-1 rounded-lg px-2 py-1 text-[10px] text-[#9C9C9B] ring-1 ring-[#9C9C9B]/40"
+          className={cn(
+            "min-h-11 flex-1 rounded-lg px-3 text-sm text-muted-foreground ring-1 ring-border",
+            focusRing
+          )}
         >
           Deny
         </motion.button>
@@ -46,7 +49,10 @@ export function PermissionRequest({
           onClick={onAllow}
           whileTap={{ scale: 0.96 }}
           transition={springs.snappy}
-          className="flex-1 rounded-lg bg-[#111111] px-2 py-1 text-[10px] text-[#FDFDFC]"
+          className={cn(
+            "min-h-11 flex-1 rounded-lg bg-primary px-3 text-sm text-primary-foreground",
+            focusRing
+          )}
         >
           Allow
         </motion.button>
