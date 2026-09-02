@@ -5,102 +5,31 @@ import { CodeIcon } from "lucide-react"
 import { AnimatePresence } from "motion/react"
 
 import { CodeModal } from "@/components/code-modal"
-import { cn } from "@/lib/utils"
-import { focusRing } from "@/lib/utils"
+import { cn, focusRing } from "@/lib/utils"
 
-export type StageKind = "default" | "square" | "dense" | "tall" | "wide"
-
-export function ComponentCard({
-  title,
-  index,
-  id,
-  panels,
-  dense = false,
-  stage = "default",
-  escape = false,
-  fullWidth = false,
-}: {
-  title: string
-  index?: string
+export type DemoStageProps = {
   id: string
-  panels: {
-    id: string
-    code: string
-    hint?: string
-    children: React.ReactNode
-  }[]
-  dense?: boolean
-  stage?: StageKind
+  index: string
+  title: string
+  description: string
+  code: string
+  sourcePath?: string
   escape?: boolean
-  fullWidth?: boolean
-}) {
-  const resolvedStage: StageKind = dense ? "dense" : stage
-
-  const minCol =
-    fullWidth || resolvedStage === "wide"
-      ? 640
-      : resolvedStage === "square"
-        ? 220
-        : resolvedStage === "dense"
-          ? 280
-          : resolvedStage === "tall"
-            ? 320
-            : 280
-
-  return (
-    <section id={id} data-naisu-section className="scroll-mt-24 md:scroll-mt-10">
-      <div className="mb-4 flex items-center gap-2">
-        <h2 className="text-sm font-medium tracking-tight text-foreground">
-          {index ? (
-            <span className="mr-2 tabular-nums text-muted-foreground">{index}</span>
-          ) : null}
-          {title}
-        </h2>
-      </div>
-
-      <div
-        className="grid gap-6"
-        style={{
-          gridTemplateColumns: fullWidth
-            ? "1fr"
-            : `repeat(auto-fill, minmax(min(100%, ${minCol}px), 1fr))`,
-        }}
-      >
-        {panels.map((panel) => (
-          <DemoPanel
-            key={panel.id}
-            id={panel.id}
-            title={panel.hint ?? title}
-            hint={panel.hint}
-            code={panel.code}
-            stage={resolvedStage}
-            escape={escape}
-          >
-            {panel.children}
-          </DemoPanel>
-        ))}
-      </div>
-    </section>
-  )
+  hero?: boolean
+  children: React.ReactNode
 }
 
-function DemoPanel({
+export function DemoStage({
   id,
+  index,
   title,
-  hint,
+  description,
   code,
+  sourcePath,
+  escape = false,
+  hero = false,
   children,
-  stage,
-  escape,
-}: {
-  id: string
-  title: string
-  hint?: string
-  code: string
-  children: React.ReactNode
-  stage: StageKind
-  escape: boolean
-}) {
+}: DemoStageProps) {
   const [copied, setCopied] = React.useState(false)
   const [open, setOpen] = React.useState(false)
 
@@ -111,67 +40,69 @@ function DemoPanel({
   }
 
   return (
-    <div id={id} data-component-grid className="group/panel flex min-w-0 scroll-mt-24 flex-col gap-2 md:scroll-mt-10">
-      {hint ? (
-        <p className="px-1 text-[13px] font-medium text-muted-foreground">{hint}</p>
-      ) : null}
+    <article
+      id={id}
+      data-component-stage
+      className="scroll-mt-28 md:scroll-mt-24"
+    >
+      <header className="mb-4 max-w-[640px]">
+        <div className="flex items-start gap-3">
+          <span className="mt-0.5 w-6 shrink-0 tabular-nums text-[13px] font-medium text-muted-foreground">
+            {index}
+          </span>
+          <div className="min-w-0 flex-1">
+            <h3 className="text-base font-medium tracking-tight text-foreground">
+              {title}
+            </h3>
+            <p className="mt-1 text-[14px] leading-relaxed text-muted-foreground">
+              {description}
+            </p>
+          </div>
+        </div>
+      </header>
 
       <div
         className={cn(
-          "relative isolate rounded-2xl bg-surface ring-1 ring-border",
+          "group/stage relative mx-auto w-full max-w-[640px] rounded-2xl bg-background shadow-[var(--shadow-soft)] ring-1 ring-border",
           escape ? "overflow-visible" : "overflow-hidden",
-          stage === "dense" && "aspect-[21/9] min-h-[180px]",
-          stage === "square" && "aspect-square min-h-[220px]",
-          stage === "default" && "aspect-[4/3] min-h-[240px]",
-          stage === "tall" && "aspect-[3/4] min-h-[280px] sm:aspect-[4/3]",
-          stage === "wide" && "min-h-[260px] aspect-[21/9] sm:min-h-[300px]"
+          hero ? "min-h-[420px]" : "min-h-[200px]"
         )}
       >
-        <div aria-hidden className="naisu-stage-grid pointer-events-none absolute inset-0 rounded-2xl" />
-
-        <div className="absolute top-3 right-3 z-20 flex gap-1.5 opacity-100 transition-opacity focus-within:opacity-100 md:opacity-0 md:group-hover/panel:opacity-100 md:group-focus-within/panel:opacity-100">
+        <div
+          className={cn(
+            "absolute top-3 right-3 z-20 flex gap-2 opacity-100 transition-opacity focus-within:opacity-100 md:opacity-100"
+          )}
+        >
           <button
             type="button"
             onClick={copy}
             className={cn(
-              "flex size-9 items-center justify-center rounded-lg bg-background text-foreground shadow-[var(--shadow-soft)] ring-1 ring-border transition-transform active:scale-95",
+              "flex min-h-11 items-center justify-center rounded-lg bg-background px-4 text-[13px] font-medium text-foreground shadow-[var(--shadow-soft)] ring-1 ring-border transition-transform active:scale-[0.98]",
               focusRing
             )}
-            aria-label="Copy"
           >
-            {copied ? (
-              <span className="text-xs font-medium">OK</span>
-            ) : (
-              <span className="text-xs font-medium">Copy</span>
-            )}
+            {copied ? "Copied" : "Copy"}
           </button>
           <button
             type="button"
             onClick={() => setOpen(true)}
             className={cn(
-              "flex size-9 items-center justify-center rounded-lg bg-background text-foreground shadow-[var(--shadow-soft)] ring-1 ring-border transition-transform active:scale-95",
+              "flex min-h-11 items-center gap-2 rounded-lg bg-background px-4 text-[13px] font-medium text-foreground shadow-[var(--shadow-soft)] ring-1 ring-border transition-transform active:scale-[0.98]",
               focusRing
             )}
-            aria-label="Code"
           >
-            <CodeIcon className="size-4" />
+            <CodeIcon className="size-4" aria-hidden />
+            View code
           </button>
         </div>
 
         <div
           className={cn(
-            "relative z-0 size-full min-h-0 min-w-0 p-4 sm:p-6",
+            "relative z-0 px-5 py-6 sm:px-8 sm:py-8",
             escape ? "overflow-visible" : "overflow-hidden"
           )}
         >
-          <div
-            className={cn(
-              "flex size-full min-h-0 min-w-0 items-center justify-center",
-              escape ? "overflow-visible" : "overflow-hidden"
-            )}
-          >
-            {children}
-          </div>
+          <div className="mx-auto w-full">{children}</div>
         </div>
       </div>
 
@@ -180,12 +111,37 @@ function DemoPanel({
           <CodeModal
             title={title}
             code={code}
+            sourcePath={sourcePath}
             onClose={() => setOpen(false)}
             onCopy={copy}
             copied={copied}
           />
         )}
       </AnimatePresence>
+    </article>
+  )
+}
+
+export function SectionDivider({
+  index,
+  title,
+  description,
+  id,
+}: {
+  index: string
+  title: string
+  description: string
+  id: string
+}) {
+  return (
+    <div id={id} data-naisu-section className="scroll-mt-28 md:scroll-mt-24">
+      <h2 className="text-lg font-medium tracking-tight text-foreground">
+        <span className="mr-2 tabular-nums text-muted-foreground">{index}</span>
+        {title}
+      </h2>
+      <p className="mt-2 max-w-[640px] text-[14px] leading-relaxed text-muted-foreground">
+        {description}
+      </p>
     </div>
   )
 }
