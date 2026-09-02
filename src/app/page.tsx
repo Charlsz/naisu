@@ -4,70 +4,26 @@ import * as React from "react"
 
 import { ClickFeedback } from "@/components/click-feedback"
 import { ComponentCard } from "@/components/component-card"
-import {
-  CardTiltDemo,
-  CheckboxBloomDemo,
-  CheckboxInkDemo,
-  CheckboxSealDemo,
-  CircularProgressDemo,
-  ClickShockwaveDemo,
-  CompareRevealDemo,
-  CoolScrollbarDemo,
-  CursorSpotlightDemo,
-  HoverBorderDemo,
-  HoverRevealDemo,
-  InfiniteSliderDemo,
-  LoadingIndicatorDemo,
-  MagneticButtonDemo,
-  NumberCounterDemo,
-  ReadingNotebookDemo,
-  TabsPillDemo,
-  TabsUnderlineDemo,
-  ToggleDemo,
-} from "@/components/demos"
 import { galleryDemos } from "@/components/demos-gallery"
-import { CoolScrollbar } from "@/components/naisu/cool-scrollbar"
 import { SideNav } from "@/components/side-nav"
 import { SoundProvider } from "@/components/sound-provider"
 import { categories, categoryIds } from "@/content/components"
-import { cssAnimTips } from "@/content/css-anim-tips"
+import { sourceFileById } from "@/content/source-files"
 import { componentSources } from "@/content/sources"
 
-const cssAnimSources = Object.fromEntries(
-  cssAnimTips.map((tip) => [
-    tip.id,
-    `/* ${tip.label} */\n${tip.css}\n\n${tip.html}`,
-  ])
-) as Record<string, string>
-
 function panelCode(id: string, label: string, hint?: string) {
+  const path = sourceFileById[id]
   return (
     componentSources[id] ??
-    cssAnimSources[id] ??
-    (hint ? `// ${label} · ${hint}` : `// ${label}`)
+    (path
+      ? `// ${path}\n// Open this file in the repository to copy the component.`
+      : hint
+        ? `// ${label} · ${hint}`
+        : `// ${label}`)
   )
 }
 
 const demos: Record<string, React.ComponentType> = {
-  "magnetic-button": MagneticButtonDemo,
-  "hover-reveal": HoverRevealDemo,
-  "continuous-slider": InfiniteSliderDemo,
-  "cursor-spotlight": CursorSpotlightDemo,
-  "number-counter": NumberCounterDemo,
-  toggle: ToggleDemo,
-  "checkbox-ink": CheckboxInkDemo,
-  "checkbox-seal": CheckboxSealDemo,
-  "checkbox-bloom": CheckboxBloomDemo,
-  "loading-indicator": LoadingIndicatorDemo,
-  "card-tilt": CardTiltDemo,
-  "tabs-pill": TabsPillDemo,
-  "tabs-underline": TabsUnderlineDemo,
-  "compare-reveal": CompareRevealDemo,
-  "circular-progress": CircularProgressDemo,
-  "hover-border": HoverBorderDemo,
-  "cool-scrollbar": CoolScrollbarDemo,
-  "reading-notebook": ReadingNotebookDemo,
-  "click-shockwave": ClickShockwaveDemo,
   ...galleryDemos,
 }
 
@@ -128,14 +84,16 @@ export default function HomePage() {
     <SoundProvider>
       <ClickFeedback />
       <SideNav activeId={activeId} />
-      <CoolScrollbar />
 
-      <main className="mx-auto min-h-screen max-w-[1680px] px-4 pt-28 pb-20 md:pl-52 md:pr-16 md:pt-10">
-        <div id="top" className="sr-only">
-          naisu
-        </div>
+      <main className="mx-auto min-h-screen max-w-[1280px] px-4 pt-28 pb-24 md:pl-52 md:pr-12 md:pt-12">
+        <header className="mb-12 max-w-xl">
+          <p className="text-[13px] font-medium text-muted-foreground">AI-native UI kit</p>
+          <h1 className="mt-1 text-2xl font-medium tracking-tight text-foreground">
+            Crafted primitives for agent and chat interfaces.
+          </h1>
+        </header>
 
-        <div className="flex flex-col gap-12">
+        <div className="flex flex-col gap-16">
           {categories.map((cat, i) => {
             const panels = cat.items.flatMap((item) => {
               if (item.variants?.length) {
