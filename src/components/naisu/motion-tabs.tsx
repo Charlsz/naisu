@@ -127,7 +127,7 @@ function MotionTabsTrigger({
         />
       )}
       {isActive && reduce && (
-        <span className="absolute inset-0 -z-10 rounded-sm bg-[#111111]/8" />
+        <span className="absolute inset-0 -z-10 rounded-sm bg-muted" />
       )}
       <span className="relative z-10">{children}</span>
     </TabsPrimitive.Tab>

@@ -86,7 +86,7 @@ const OPTIONS: Option[] = [
     body: (
       <>
         Fall back to a{" "}
-        <span className="font-medium text-[#111111]">full module rewrite</span>{" "}
+        <span className="font-medium text-foreground">full module rewrite</span>{" "}
         across the parser surface.
       </>
     ),

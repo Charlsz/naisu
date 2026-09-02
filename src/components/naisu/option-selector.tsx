@@ -94,7 +94,7 @@ export function OptionSelector({
           setManualOpen((v) => !v)
         }}
         className={cn(
-          "flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] text-[#111111]",
+          "flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm text-foreground",
           appearance === "soft" && "border border-transparent bg-muted",
           appearance === "ring" &&
             "bg-background shadow-[var(--shadow-soft)] ring-1 ring-border",
