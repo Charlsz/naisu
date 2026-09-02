@@ -18,7 +18,7 @@ export type ConversationProps = {
 export function Conversation({
   children,
   tabs = ["Chat", "Plan"],
-  placeholder = "Reply…",
+  placeholder = "Reply...",
   onSend,
   className,
 }: ConversationProps) {

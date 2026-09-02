@@ -151,7 +151,7 @@ export function SelectionActions({ className }: SelectionActionsProps) {
                   className="size-3 shrink-0 rounded-full border border-muted-foreground border-t-foreground"
                   style={{ animation: "naisu-spin 700ms linear infinite" }}
                 />
-                {action}…
+                {action}...
               </span>
             ) : null}
 

@@ -35,8 +35,8 @@ const siteUrl = resolveSiteUrl()
 
 const siteName = "naisu"
 const title = {
-  default: "naisu · AI-native UI kit",
-  template: "%s · naisu",
+  default: "naisu / AI-native UI kit",
+  template: "%s / naisu",
 }
 const description =
   "Crafted primitives for agent and chat interfaces. Inter, three colors, product-grade motion."
@@ -87,7 +87,7 @@ export const metadata: Metadata = {
         url: "/urlpreview.png?v=2",
         width: 1200,
         height: 630,
-        alt: "naisu — components, interactions, and experiments for the web",
+        alt: "naisu - crafted primitives for agent and chat interfaces",
         type: "image/png",
       },
     ],

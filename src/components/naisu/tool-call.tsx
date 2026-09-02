@@ -16,7 +16,7 @@ export type ToolCallProps = {
 }
 
 const statusLabel: Record<ToolCallStatus, string> = {
-  pending: "…",
+  pending: "...",
   running: "run",
   done: "ok",
   error: "err",

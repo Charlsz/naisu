@@ -101,7 +101,7 @@ function useElapsed() {
 
 export function LoadingState({
   variant = "Dots",
-  label = "Reading files…",
+  label = "Reading files...",
   className,
 }: LoadingStateProps) {
   const elapsed = useElapsed()

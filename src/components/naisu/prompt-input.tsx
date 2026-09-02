@@ -31,7 +31,7 @@ const DEFAULT_MODELS: PromptModel[] = [
 const ATTACHMENTS = ["model.ts", "parser.ts"]
 
 export function PromptInput({
-  placeholder = "Ask anything…",
+  placeholder = "Ask anything...",
   models = DEFAULT_MODELS,
   onSend,
   className,

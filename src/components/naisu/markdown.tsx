@@ -37,7 +37,7 @@ export function Markdown({ content, className }: MarkdownProps) {
   const lines = content.split("\n")
 
   return (
-    <div className={cn("space-y-1.5 text-sm leading-relaxed text-foreground", className)}>
+    <div className={cn("space-y-2 text-[15px] leading-relaxed text-foreground", className)}>
       {lines.map((line, i) => {
         if (line.startsWith("- ")) {
           return (

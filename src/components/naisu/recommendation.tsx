@@ -59,7 +59,7 @@ const OPTIONS: Option[] = [
         <ValuePill tone="green">~12 min</ValuePill>
       </>
     ),
-    short: "Patch parse() in place · ~12 min",
+    short: "Patch parse() in place - ~12 min",
     signal: 3,
     tone: "#1A1A1A",
     label: "High confidence",
