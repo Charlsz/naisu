@@ -26,7 +26,7 @@ export function Message({ role, children, className }: MessageProps) {
     >
       <div
         className={cn(
-          "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
+          "max-w-[85%] rounded-2xl px-4 py-2.5 text-[15px] leading-relaxed",
           isUser
             ? "bg-primary text-primary-foreground"
             : "bg-background text-foreground ring-1 ring-border"

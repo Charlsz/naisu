@@ -12,6 +12,8 @@ export type TaskRow = { title: string; meta?: string }
 export type TaskRowsProps = {
   tasks?: TaskRow[]
   autoplay?: boolean
+  /** Static highlight index when autoplay is off. */
+  activeIndex?: number
   className?: string
 }
 
@@ -24,9 +26,10 @@ const DEFAULT_TASKS: TaskRow[] = [
 export function TaskRows({
   tasks = DEFAULT_TASKS,
   autoplay = true,
+  activeIndex = 2,
   className,
 }: TaskRowsProps) {
-  const [active, setActive] = React.useState(0)
+  const [active, setActive] = React.useState(activeIndex)
 
   React.useEffect(() => {
     if (!autoplay) return

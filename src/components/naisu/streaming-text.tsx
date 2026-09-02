@@ -22,6 +22,8 @@ export type StreamingTextProps = {
   cite?: string
   sources?: StreamingSource[]
   followUps?: string[]
+  /** Start fully rendered (gallery / settled state). */
+  complete?: boolean
   className?: string
 }
 
@@ -41,20 +43,25 @@ export function StreamingText({
   cite = "model.ts",
   sources = DEFAULT_SOURCES,
   followUps = DEFAULT_FOLLOW_UPS,
+  complete = false,
   className,
 }: StreamingTextProps) {
   const chars = React.useMemo(() => Array.from(text), [text])
-  const [shown, setShown] = React.useState(0)
+  const [shown, setShown] = React.useState(complete ? chars.length : 0)
   const [copied, setCopied] = React.useState(false)
   const [openSources, setOpenSources] = React.useState(false)
   const streaming = shown < chars.length
   const visible = chars.slice(0, shown).join("")
 
   React.useEffect(() => {
+    if (complete) {
+      setShown(chars.length)
+      return
+    }
     if (!streaming) return
     const id = window.setTimeout(() => setShown((n) => n + 1), speed)
     return () => window.clearTimeout(id)
-  }, [shown, streaming, speed])
+  }, [shown, streaming, speed, complete, chars.length])
 
   React.useEffect(() => {
     if (streaming || !loop) return
@@ -73,7 +80,7 @@ export function StreamingText({
         className
       )}
     >
-      <p className="min-h-[2.6em] text-sm leading-relaxed text-foreground">
+      <p className="min-h-[2.6em] text-[15px] leading-relaxed text-foreground">
         <span>{visible}</span>
         {streaming ? (
           <motion.span

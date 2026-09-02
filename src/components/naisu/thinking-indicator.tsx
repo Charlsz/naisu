@@ -15,6 +15,8 @@ export type ThinkingIndicatorProps = {
   variant?: ThinkingVariant
   steps?: ThinkingStep[]
   loop?: boolean
+  /** Start collapsed with a completed trace (gallery / settled state). */
+  settled?: boolean
   className?: string
 }
 
@@ -52,6 +54,7 @@ export function ThinkingIndicator({
   variant = "Steps",
   steps,
   loop = true,
+  settled = false,
   className,
 }: ThinkingIndicatorProps) {
   const preset = PRESETS[variant]
@@ -60,18 +63,19 @@ export function ThinkingIndicator({
     [steps, preset]
   )
 
-  const [count, setCount] = React.useState(0)
-  const [open, setOpen] = React.useState(true)
-  const [touched, setTouched] = React.useState(false)
+  const [count, setCount] = React.useState(settled ? trace.length : 0)
+  const [open, setOpen] = React.useState(settled)
+  const [touched, setTouched] = React.useState(settled)
   const done = count >= trace.length
 
   React.useEffect(() => {
-    if (done) return
+    if (settled || done) return
     const id = window.setTimeout(() => setCount((c) => c + 1), TICK)
     return () => window.clearTimeout(id)
-  }, [count, done])
+  }, [count, done, settled])
 
   React.useEffect(() => {
+    if (settled) return
     if (!done) return
     if (!touched) {
       const collapse = window.setTimeout(() => setOpen(false), 500)
@@ -88,7 +92,7 @@ export function ThinkingIndicator({
     if (!loop) return
     const restart = window.setTimeout(() => setCount(0), 2600)
     return () => window.clearTimeout(restart)
-  }, [done, loop, touched])
+  }, [done, loop, touched, settled])
 
   const Icon = preset.icon
   const seconds = Math.max(1, Math.round((trace.length * TICK) / 1000))
@@ -115,7 +119,7 @@ export function ThinkingIndicator({
           </span>
         ) : (
           <span className="naisu-shimmer flex-1 truncate text-sm font-medium">
-            {preset.working}…
+            {preset.working}...
           </span>
         )}
         <motion.span

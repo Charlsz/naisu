@@ -41,321 +41,297 @@ import {
   ToolCallChips,
   ToolCallGroup,
 } from "@/components/naisu/tool-call"
+import * as fx from "@/content/fixtures"
 
-const stage = "flex size-full items-center justify-center p-4"
+function Frame({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
+  return <div className={className}>{children}</div>
+}
 
 export function ConversationDemo() {
   return (
-    <div className={stage}>
-      <div className="h-full max-h-[320px] w-full max-w-[380px]">
-        <Conversation>
-          <Message role="user">Why did checkout flake on CI?</Message>
-          <Message role="assistant">
-            Race in the cart total. Assert after settle, not on render.
-          </Message>
-          <Message role="assistant">Want a patch for checkout.spec.ts?</Message>
-        </Conversation>
-      </div>
-    </div>
+    <Frame className="h-[400px] w-full">
+      <Conversation placeholder="Reply to the agent...">
+        <Message role="user">{fx.user.askFix}</Message>
+        <Message role="assistant">{fx.assistant.summary}</Message>
+        <Message role="assistant">{fx.assistant.offerPatch}</Message>
+      </Conversation>
+    </Frame>
   )
 }
 
 export function MessageSingleDemo() {
   return (
-    <div className={stage}>
-      <div className="flex w-full max-w-[300px] flex-col gap-3">
-        <Message role="user">Can we ship the canary tonight?</Message>
-        <Message role="assistant">Yes. Error budget is still green.</Message>
-      </div>
-    </div>
+    <Frame className="flex w-full flex-col gap-3">
+      <Message role="user">{fx.user.askShip}</Message>
+      <Message role="assistant">
+        CI is green on fix/parse-null-id. I can open the PR when you are ready.
+      </Message>
+    </Frame>
   )
 }
 
 export function MessageGroupDemo() {
   return (
-    <div className={stage}>
-      <div className="w-full max-w-[280px]">
-        <MessageGroup
-          role="assistant"
-          messages={[
-            "Scanning payments-api…",
-            "Found the stampede in cache warm-up",
-            "Drafting a jittered backoff patch",
-          ]}
-        />
-      </div>
-    </div>
+    <Frame className="w-full">
+      <MessageGroup role="assistant" messages={[...fx.assistant.group]} />
+    </Frame>
   )
 }
 
 export function PromptInputDemo() {
   return (
-    <div className={stage}>
-      <div className="w-full max-w-[320px]">
-        <PromptInput />
-      </div>
-    </div>
+    <Frame className="w-full">
+      <PromptInput
+        placeholder="Ask the agent to patch model.ts..."
+        models={[...fx.system.models]}
+      />
+    </Frame>
   )
 }
 
 export function MarkdownDemo() {
   return (
-    <div className={stage}>
-      <div className="w-full max-w-[300px] rounded-xl bg-background p-3 ring-1 ring-border">
-        <Markdown
-          content={`**Summary**\n- Added \`PromptInput\`\n- Updated tests`}
-        />
-      </div>
-    </div>
+    <Frame className="w-full rounded-xl bg-background p-4 ring-1 ring-border">
+      <Markdown content={fx.markdown.content} />
+    </Frame>
   )
 }
 
 export function CodeBlockDemo() {
   return (
-    <div className={stage}>
-      <div className="w-full max-w-[280px]">
-        <CodeBlock language="ts" code={'const ok = await run()'} />
-      </div>
-    </div>
+    <Frame className="w-full">
+      <CodeBlock language={fx.code.language} code={fx.code.snippet} />
+    </Frame>
   )
 }
 
 export function AttachmentDemo() {
   return (
-    <div className={stage}>
-      <Attachment name="schema.sql" size="12 KB" />
-    </div>
+    <Frame>
+      <Attachment name={fx.story.files.schema} size="12 KB" />
+    </Frame>
   )
 }
 
-function ThinkingPanel({ variant }: { variant: ThinkingVariant }) {
+function ThinkingPanel({
+  variant,
+  trace,
+}: {
+  variant: ThinkingVariant
+  trace: string[]
+}) {
   return (
-    <div className={stage}>
-      <div className="w-full max-w-[300px]">
-        <ThinkingIndicator variant={variant} />
-      </div>
-    </div>
+    <Frame className="w-full">
+      <ThinkingIndicator
+        variant={variant}
+        loop={false}
+        settled
+        steps={trace.map((label) => ({ label, done: true }))}
+      />
+    </Frame>
   )
 }
 
 export function ThinkingStepsDemo() {
-  return <ThinkingPanel variant="Steps" />
+  return <ThinkingPanel variant="Steps" trace={[...fx.thinking.steps]} />
 }
 
 export function ThinkingReasoningDemo() {
-  return <ThinkingPanel variant="Reasoning" />
+  return <ThinkingPanel variant="Reasoning" trace={[...fx.thinking.reasoning]} />
 }
 
 export function StreamingTextDemo() {
   return (
-    <div className={stage}>
-      <div className="w-full max-w-[300px]">
-        <StreamingText />
-      </div>
-    </div>
+    <Frame className="w-full">
+      <StreamingText
+        text={fx.assistant.stream}
+        cite={fx.streaming.cite}
+        sources={[...fx.streaming.sources]}
+        followUps={[...fx.streaming.followUps]}
+        complete
+        loop={false}
+      />
+    </Frame>
   )
 }
 
 export function ToolCallSingleDemo() {
   return (
-    <div className={stage}>
-      <ToolCall name="read_file" status="running" />
-    </div>
+    <Frame>
+      <ToolCall name={fx.tools.single.name} status={fx.tools.single.status} />
+    </Frame>
   )
 }
 
 export function ToolCallGroupDemo() {
   return (
-    <div className={stage}>
-      <ToolCallGroup
-        calls={[
-          { name: "grep", status: "done" },
-          { name: "edit", status: "running" },
-          { name: "test", status: "pending" },
-        ]}
-      />
-    </div>
+    <Frame className="w-full">
+      <ToolCallGroup calls={[...fx.tools.group]} />
+    </Frame>
   )
 }
 
 export function ToolCallChipsDemo() {
   return (
-    <div className={stage}>
-      <div className="w-full max-w-[300px]">
-        <ToolCallChips autoplay />
-      </div>
-    </div>
+    <Frame className="w-full">
+      <ToolCallChips tools={fx.tools.chips} autoplay={false} />
+    </Frame>
   )
 }
 
 export function PermissionRequestDemo() {
   return (
-    <div className={stage}>
-      <div className="w-full max-w-[300px]">
-        <PermissionRequest
-          title="Allow shell command?"
-          description="npm test -- --runInBand"
-        />
-      </div>
-    </div>
+    <Frame className="w-full">
+      <PermissionRequest
+        title={fx.permission.title}
+        description={fx.permission.description}
+      />
+    </Frame>
   )
 }
 
 export function TasksDemo() {
   return (
-    <div className={stage}>
-      <div className="w-full max-w-[280px]">
-        <TaskRows autoplay />
-      </div>
-    </div>
+    <Frame className="w-full">
+      <TaskRows tasks={[...fx.tasks.rows]} autoplay={false} activeIndex={2} />
+    </Frame>
   )
 }
 
 export function RecommendationDemo() {
   return (
-    <div className={stage}>
-      <div className="w-full max-w-[320px]">
-        <Recommendation />
-      </div>
-    </div>
+    <Frame className="w-full">
+      <Recommendation />
+    </Frame>
   )
 }
 
 export function ContextCardsDemo() {
   return (
-    <div className={stage}>
-      <div className="w-full max-w-[300px]">
-        <ContextCards />
-      </div>
-    </div>
+    <Frame className="w-full">
+      <ContextCards chunks={[...fx.context.chunks]} />
+    </Frame>
   )
 }
 
 export function SelectionActionsDemo() {
   return (
-    <div className={stage}>
+    <Frame className="w-full">
       <SelectionActions />
-    </div>
+    </Frame>
   )
 }
 
 export function ToastDemo() {
   return (
-    <div className={stage}>
-      <Toast message="Patch applied to model.ts" />
-    </div>
+    <Frame>
+      <Toast message={fx.system.toast} />
+    </Frame>
   )
 }
 
 export function DialogDemo() {
   const [open, setOpen] = React.useState(true)
   return (
-    <div className={stage}>
-      <div className="relative h-[200px] w-full max-w-[280px]">
-        <SystemDialog
-          open={open}
-          onOpenChange={setOpen}
-          title="Discard draft?"
-          description="Unsaved changes in the composer will be lost."
-          contained
-        />
-        {!open && (
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            className="rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground"
-          >
-            Open dialog
-          </button>
-        )}
-      </div>
-    </div>
+    <Frame className="relative min-h-[220px] w-full">
+      <SystemDialog
+        open={open}
+        onOpenChange={setOpen}
+        title={fx.system.dialog.title}
+        description={fx.system.dialog.description}
+        contained
+      />
+      {!open && (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="rounded-lg bg-primary px-4 py-2.5 text-[15px] text-primary-foreground"
+        >
+          Open dialog
+        </button>
+      )}
+    </Frame>
   )
 }
 
 export function EmptyStateDemo() {
   return (
-    <div className={stage}>
+    <Frame className="w-full">
       <EmptyState
-        title="No messages yet"
-        description="Start a thread or pick a template to begin."
+        title={fx.system.empty.title}
+        description={fx.system.empty.description}
         action={
           <button
             type="button"
-            className="rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground"
+            className="rounded-lg bg-primary px-4 py-2.5 text-[15px] text-primary-foreground"
           >
-            New thread
+            {fx.system.empty.action}
           </button>
         }
       />
-    </div>
+    </Frame>
   )
 }
 
 export function SettingsPanelDemo() {
   return (
-    <div className={stage}>
-      <div className="w-full max-w-[320px]">
-        <SettingsPanel
-          rows={[
-            {
-              id: "model",
-              label: "Model",
-              control: (
-                <OptionSelector
-                  autoplay
-                  options={[
-                    { id: "fast", label: "Fast" },
-                    { id: "balanced", label: "Balanced" },
-                    { id: "deep", label: "Deep" },
-                  ]}
-                />
-              ),
-            },
-            {
-              id: "tools",
-              label: "Tools",
-              control: <SettingsToggle autoplay defaultOn />,
-            },
-            {
-              id: "permissions",
-              label: "Permissions",
-              control: (
-                <OptionSelector
-                  appearance="field"
-                  menu="stretch"
-                  options={[
-                    { id: "ask", label: "Ask" },
-                    { id: "auto", label: "Auto" },
-                    { id: "off", label: "Off" },
-                  ]}
-                />
-              ),
-            },
-          ]}
-        />
-      </div>
-    </div>
+    <Frame className="w-full">
+      <SettingsPanel
+        rows={[
+          {
+            id: "model",
+            label: "Model",
+            control: (
+              <OptionSelector
+                options={[...fx.system.models]}
+                value="balanced"
+              />
+            ),
+          },
+          {
+            id: "tools",
+            label: "Tools",
+            control: <SettingsToggle defaultOn />,
+          },
+          {
+            id: "permissions",
+            label: "Permissions",
+            control: (
+              <OptionSelector
+                appearance="field"
+                menu="stretch"
+                options={[...fx.system.permissions]}
+                value="ask"
+              />
+            ),
+          },
+        ]}
+      />
+    </Frame>
   )
 }
 
 export function StatusDemo() {
   return (
-    <div className={stage}>
-      <div className="flex flex-wrap items-center justify-center gap-2">
-        <Status label="Idle" tone="neutral" />
-        <Status label="Running" tone="active" />
-        <Status label="Failed" tone="error" />
-      </div>
-    </div>
+    <Frame className="flex flex-wrap gap-3">
+      <Status label={fx.system.status.idle} tone="neutral" />
+      <Status label={fx.system.status.running} tone="active" />
+      <Status label={fx.system.status.failed} tone="error" />
+    </Frame>
   )
 }
 
 function LoadingPanel({ variant }: { variant: "Dots" | "Ring" | "Bars" }) {
   return (
-    <div className={stage}>
-      <LoadingState variant={variant} />
-    </div>
+    <Frame>
+      <LoadingState variant={variant} label={fx.system.loading} />
+    </Frame>
   )
 }
 
@@ -373,42 +349,46 @@ export function LoadingBarsDemo() {
 
 export function ProgressDemo() {
   return (
-    <div className={stage}>
-      <div className="w-full max-w-[280px]">
-        <Progress value={62} />
+    <Frame className="w-full">
+      <div className="space-y-2">
+        <div className="flex items-center justify-between text-[14px]">
+          <span className="text-muted-foreground">Agent run</span>
+          <span className="font-medium text-foreground">{fx.system.progress}%</span>
+        </div>
+        <Progress value={fx.system.progress} />
       </div>
-    </div>
+    </Frame>
   )
 }
 
 export function MotionButtonDemo() {
   return (
-    <div className={stage}>
-      <MotionButton>Send message</MotionButton>
-    </div>
+    <Frame>
+      <MotionButton>Send to agent</MotionButton>
+    </Frame>
   )
 }
 
 export function MotionTabsDemo() {
   return (
-    <div className={stage}>
-      <MotionTabs defaultValue="chat" className="w-full max-w-[280px]">
+    <Frame className="w-full">
+      <MotionTabs defaultValue="chat" className="w-full">
         <MotionTabsList>
           <MotionTabsTrigger value="chat">Chat</MotionTabsTrigger>
           <MotionTabsTrigger value="plan">Plan</MotionTabsTrigger>
           <MotionTabsTrigger value="logs">Logs</MotionTabsTrigger>
         </MotionTabsList>
-        <MotionTabsContent value="chat" className="pt-3 text-sm text-muted-foreground">
-          Thread view
+        <MotionTabsContent value="chat" className="pt-4 text-[15px] text-foreground">
+          Thread with model.ts patch and test output.
         </MotionTabsContent>
-        <MotionTabsContent value="plan" className="pt-3 text-sm text-muted-foreground">
-          Task plan
+        <MotionTabsContent value="plan" className="pt-4 text-[15px] text-foreground">
+          Read, patch, and verify the payments-api suite.
         </MotionTabsContent>
-        <MotionTabsContent value="logs" className="pt-3 text-sm text-muted-foreground">
-          Run logs
+        <MotionTabsContent value="logs" className="pt-4 text-[15px] text-foreground">
+          npm test finished with 12 passing tests.
         </MotionTabsContent>
       </MotionTabs>
-    </div>
+    </Frame>
   )
 }
 

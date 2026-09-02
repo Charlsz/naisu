@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { AnimatePresence, motion } from "motion/react"
-import { CheckIcon, CodeIcon, CopyIcon, XIcon } from "lucide-react"
+import { CheckIcon, CopyIcon, XIcon } from "lucide-react"
 
 import { springs } from "@/lib/motion"
 import { cn, focusRing } from "@/lib/utils"
@@ -10,12 +10,14 @@ import { cn, focusRing } from "@/lib/utils"
 export function CodeModal({
   title,
   code,
+  sourcePath,
   onClose,
   onCopy,
   copied,
 }: {
   title: string
   code: string
+  sourcePath?: string
   onClose: () => void
   onCopy: () => void
   copied: boolean
@@ -48,13 +50,18 @@ export function CodeModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-border px-4 py-3">
-          <p className="truncate text-sm font-medium text-foreground">{title}</p>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium text-foreground">{title}</p>
+            {sourcePath ? (
+              <p className="truncate text-[13px] text-muted-foreground">{sourcePath}</p>
+            ) : null}
+          </div>
           <div className="flex items-center gap-1">
             <button
               type="button"
               onClick={onCopy}
               className={cn(
-                "flex h-11 items-center gap-1.5 rounded-lg px-3 text-sm text-foreground transition-colors hover:bg-muted",
+                "flex min-h-11 items-center gap-1.5 rounded-lg px-3 text-sm text-foreground transition-colors hover:bg-muted",
                 focusRing
               )}
             >
@@ -78,6 +85,15 @@ export function CodeModal({
             </button>
           </div>
         </div>
+        {sourcePath ? (
+          <p className="border-b border-border px-4 py-2 text-[13px] text-muted-foreground">
+            Copy from the repository path above. Components assume foundation tokens from{" "}
+            <code className="rounded bg-muted px-1 py-0.5 font-mono text-[12px] text-foreground">
+              src/app/globals.css
+            </code>
+            .
+          </p>
+        ) : null}
         <pre className="overflow-auto p-4 text-[13px] leading-relaxed text-foreground">
           <code>{code}</code>
         </pre>
