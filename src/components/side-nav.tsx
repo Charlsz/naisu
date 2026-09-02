@@ -95,8 +95,8 @@ export function SideNav({ activeId }: { activeId?: string }) {
       data-side-nav
       className={cn(
         "pointer-events-none z-40 flex flex-col gap-3",
-        "fixed inset-x-0 top-0 border-b border-border bg-background px-4 pt-3 pb-3",
-        "md:inset-x-auto md:top-4 md:bottom-4 md:left-4 md:w-44 md:border-0 md:bg-transparent md:px-0 md:pt-0 md:pb-0"
+        "fixed inset-x-0 top-0 bg-surface px-4 pt-3 pb-3 shadow-[var(--shadow-hairline)]",
+        "md:inset-x-auto md:top-4 md:bottom-4 md:left-4 md:w-44 md:border-0 md:bg-transparent md:px-0 md:pt-0 md:pb-0 md:shadow-none"
       )}
     >
       <div className="pointer-events-auto flex shrink-0 items-center justify-between gap-2">
@@ -112,7 +112,11 @@ export function SideNav({ activeId }: { activeId?: string }) {
               rafRef: scrollRafRef,
             })
           }
-          className={cn("flex size-11 shrink-0 items-center justify-center", focusRing)}
+          className={cn(
+            "flex size-[40px] shrink-0 items-center justify-center rounded-[var(--radius-control)]",
+            "transition-all duration-150 hover:bg-hover active:scale-95",
+            focusRing
+          )}
         >
           <Image
             src="/naisu.png"
@@ -131,7 +135,8 @@ export function SideNav({ activeId }: { activeId?: string }) {
             aria-pressed={muted}
             onClick={toggle}
             className={cn(
-              "relative flex size-11 items-center justify-center overflow-hidden",
+              "relative flex size-[40px] items-center justify-center overflow-hidden rounded-[var(--radius-control)]",
+              "transition-all duration-150 hover:bg-hover active:scale-95",
               focusRing
             )}
           >
@@ -150,7 +155,8 @@ export function SideNav({ activeId }: { activeId?: string }) {
             rel="noopener noreferrer"
             aria-label="GitHub"
             className={cn(
-              "flex size-11 items-center justify-center",
+              "flex size-[40px] items-center justify-center rounded-[var(--radius-control)]",
+              "transition-all duration-150 hover:bg-hover active:scale-95",
               focusRing
             )}
           >
@@ -182,11 +188,12 @@ export function SideNav({ activeId }: { activeId?: string }) {
                     data-nav-id={cat.id}
                     onClick={() => scrollTo(cat.id)}
                     className={cn(
-                      "relative flex h-11 min-w-[44px] items-center gap-2 rounded-lg px-3 text-left text-[13px] leading-tight transition-colors",
+                      "relative flex h-[32px] min-w-[44px] items-center gap-2 px-3 text-left text-[13px] leading-tight transition-all duration-150",
+                      "rounded-[var(--radius-control)]",
                       "w-auto md:w-full",
                       active
-                        ? "font-medium text-primary-foreground"
-                        : "font-normal text-foreground hover:bg-muted",
+                        ? "font-medium text-[var(--page)]"
+                        : "font-normal text-ink hover:bg-hover",
                       focusRing
                     )}
                   >
@@ -194,10 +201,10 @@ export function SideNav({ activeId }: { activeId?: string }) {
                       <motion.span
                         layoutId={`naisu-nav-active-${navHighlightId}`}
                         transition={springs.snappy}
-                        className="absolute inset-0 rounded-lg bg-primary"
+                        className="absolute inset-0 rounded-[var(--radius-control)] bg-ink shadow-[var(--shadow-btn)]"
                       />
                     ) : null}
-                    <span className="relative w-5 shrink-0 tabular-nums text-muted-foreground">
+                    <span className="relative w-5 shrink-0 tabular-nums text-ink-3">
                       {index}
                     </span>
                     <span className="relative truncate whitespace-nowrap">

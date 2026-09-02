@@ -2,37 +2,44 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans), Inter, ui-sans-serif, system-ui, sans-serif;
-  --font-mono: ui-monospace, "Cascadia Code", "Segoe UI Mono", monospace;
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --color-surface: var(--surface);
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.25rem;
-  --shadow-soft: 0 1px 2px rgba(26, 26, 26, 0.04), 0 8px 24px rgba(26, 26, 26, 0.06);
-}
+/* ──────────────────────────────────────────────────────────
+ * Naisu — design tokens (BeautifulUI foundation ported to 3-color brand)
+ * Paper #FDFDFC, ink #1A1A1A, muted #9C9C9B + red destructive.
+ * Crisp 1px rings + layered soft shadows = BeautifulUI elevation craft.
+ * ────────────────────────────────────────────────────────── */
 
 :root {
+  /* surfaces — Naisu paper whites */
+  --page: #fdfdfc;
+  --canvas: #fafaf9;
+  --surface: #fdfdfc;
+  --inset: #f7f7f6;
+  --hover: #f2f2f1;
+  --hover-2: #ececeb;
+
+  /* ink ramp — Naisu 3-color system */
+  --ink: #1a1a1a;
+  --ink-2: #6b6b6a;
+  --ink-3: #9c9c9b;
+
+  /* borders — crisp, not alpha-muddy */
+  --line: rgba(156, 156, 155, 0.3);
+  --line-strong: rgba(156, 156, 155, 0.5);
+  --line-soft: rgba(156, 156, 155, 0.15);
+
+  /* semantic */
+  --destructive: #c41e3a;
+  --destructive-tint: rgba(196, 30, 58, 0.08);
+
+  /* shadows — BeautifulUI layered stacks with Naisu neutrals */
+  --shadow-hairline: 0 0 0 1px var(--line);
+  --shadow-btn: 0 0 0 1px var(--line-strong), 0 1px 2px rgba(26, 26, 26, 0.04);
+  --shadow-card: 0 0 0 1px var(--line), 0 1px 2px rgba(26, 26, 26, 0.03), 0 4px 12px rgba(26, 26, 26, 0.04);
+  --shadow-raised: 0 0 0 1px var(--line), 0 2px 8px rgba(26, 26, 26, 0.06);
+  --shadow-overlay: 0 0 0 1px var(--line), 0 8px 28px rgba(26, 26, 26, 0.12);
+  --shadow-inset-field: inset 0 1px 2px rgba(26, 26, 26, 0.06);
+
+  /* legacy compat for existing components */
   --background: #fdfdfc;
   --foreground: #1a1a1a;
   --card: #fdfdfc;
@@ -47,60 +54,190 @@
   --muted-foreground: #9c9c9b;
   --accent: rgba(26, 26, 26, 0.06);
   --accent-foreground: #1a1a1a;
-  --surface: rgba(26, 26, 26, 0.04);
-  --destructive: #c41e3a;
   --destructive-foreground: #fdfdfc;
-  --border: rgba(156, 156, 155, 0.45);
-  --input: rgba(156, 156, 155, 0.45);
+  --border: rgba(156, 156, 155, 0.3);
+  --input: rgba(156, 156, 155, 0.3);
   --ring: #1a1a1a;
   --radius: 0.75rem;
+}
+
+@theme inline {
+  /* colors */
+  --color-page: var(--page);
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-inset: var(--inset);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-hover: var(--hover);
+  --color-hover-2: var(--hover-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-line-soft: var(--line-soft);
+  --color-destructive: var(--destructive);
+  --color-destructive-tint: var(--destructive-tint);
+
+  /* legacy compat */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  /* shadows */
+  --shadow-hairline: var(--shadow-hairline);
+  --shadow-btn: var(--shadow-btn);
+  --shadow-card: var(--shadow-card);
+  --shadow-raised: var(--shadow-raised);
+  --shadow-overlay: var(--shadow-overlay);
+  --shadow-inset-field: var(--shadow-inset-field);
+
+  /* type */
+  --font-sans: var(--font-sans), Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", "Segoe UI Mono", monospace;
+
+  /* radii — BeautifulUI scale: chip 6, control 8, card 10, window 14, pill 999 */
+  --radius-chip: 6px;
+  --radius-control: 8px;
+  --radius-card: 10px;
+  --radius-window: 14px;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+
+  /* easing — BeautifulUI strong curves */
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-link: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   html {
     @apply font-sans scroll-smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
+
   body {
-    @apply bg-background text-foreground text-[15px] leading-relaxed antialiased;
+    @apply bg-page text-ink text-[15px] leading-relaxed antialiased;
+    font-feature-settings: "cv11", "ss01";
+    letter-spacing: -0.01em;
   }
-  button,
+
+  /* headings balance; descriptions avoid orphans */
+  h1, h2, h3, h4 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* underlines clear descenders */
+  a {
+    text-underline-position: from-font;
+    text-decoration-skip-ink: auto;
+  }
+
+  ::selection {
+    background: rgba(26, 26, 26, 0.08);
+    color: var(--ink);
+  }
+
+  /* clickable elements invite the click */
+  button:not(:disabled),
   a,
-  [role="button"],
+  [role="button"]:not([aria-disabled="true"]),
   [role="switch"],
+  label:has(input),
   [data-clickable] {
     cursor: pointer;
   }
+
+  /* focus-visible with Naisu ink */
+  :focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  [contenteditable]:focus-visible {
+    outline: none;
+  }
 }
 
-/* ── Naisu keyframes ─────────────────────────────────────────── */
+/* ── primitive spacing system (BeautifulUI) ────────────── */
+.primitive-card-pad {
+  padding: 12px;
+}
+
+.primitive-card-bar {
+  padding: 10px 12px;
+}
+
+.primitive-card-footer {
+  padding: 10px;
+}
+
+.primitive-icon-button {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-control);
+}
+
+/* ── shared keyframes (BeautifulUI motion standards) ──────── */
 
 @keyframes naisu-pixel-on {
-  0%,
-  100% {
+  0%, 100% {
     opacity: 0.15;
   }
-  40%,
-  60% {
+  18%, 42% {
     opacity: 1;
+  }
+  62% {
+    opacity: 0.15;
   }
 }
 
 @keyframes naisu-shimmer-text {
-  0% {
-    background-position: 100% 0;
+  from {
+    background-position: 150% center;
   }
-  100% {
-    background-position: -100% 0;
+  to {
+    background-position: -50% center;
   }
 }
 
 @keyframes naisu-fade-up {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -111,7 +248,7 @@
 @keyframes naisu-pop-in {
   from {
     opacity: 0;
-    transform: scale(0.96);
+    transform: scale(0.95);
   }
   to {
     opacity: 1;
@@ -120,18 +257,26 @@
 }
 
 @keyframes naisu-blink {
-  0%,
-  100% {
+  0%, 100% {
     opacity: 1;
   }
   50% {
-    opacity: 0.15;
+    opacity: 0;
   }
 }
 
 @keyframes naisu-spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes naisu-caret-blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
   }
 }
 
@@ -151,11 +296,52 @@
   animation: naisu-shimmer-text 1.9s linear infinite;
 }
 
+/* streaming text primitive — BeautifulUI streaming tail + caret */
+.stream-tail {
+  filter: blur(1.6px);
+  -webkit-mask-image: linear-gradient(to right, #000 20%, rgba(0, 0, 0, 0.2));
+  mask-image: linear-gradient(to right, #000 20%, rgba(0, 0, 0, 0.2));
+}
+
+.stream-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.05em;
+  margin-left: 1.5px;
+  translate: 0 -0.5px;
+  border-radius: 1px;
+  background: var(--ink);
+  vertical-align: text-bottom;
+  animation: naisu-caret-blink 1s step-end infinite;
+}
+
+.stream-caret.is-streaming {
+  animation: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
   .naisu-shimmer {
     animation: none;
     background-image: none;
     color: #9c9c9b;
+  }
+
+  .stream-caret {
+    animation: none;
+  }
+
+  .stream-tail {
+    filter: none;
+    -webkit-mask-image: none;
+    mask-image: none;
   }
 }
 

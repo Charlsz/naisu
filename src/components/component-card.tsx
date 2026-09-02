@@ -45,16 +45,16 @@ export function DemoStage({
       data-component-stage
       className="scroll-mt-28 md:scroll-mt-24"
     >
-      <header className="mb-4 max-w-[640px]">
+      <header className="mb-5 max-w-[640px]">
         <div className="flex items-start gap-3">
-          <span className="mt-0.5 w-6 shrink-0 tabular-nums text-[13px] font-medium text-muted-foreground">
+          <span className="mt-0.5 w-6 shrink-0 tabular-nums text-[13px] font-medium text-ink-3">
             {index}
           </span>
           <div className="min-w-0 flex-1">
-            <h3 className="text-base font-medium tracking-tight text-foreground">
+            <h3 className="text-[15px] font-medium leading-snug tracking-tight text-ink">
               {title}
             </h3>
-            <p className="mt-1 text-[14px] leading-relaxed text-muted-foreground">
+            <p className="mt-1.5 text-[14px] leading-relaxed text-ink-2">
               {description}
             </p>
           </div>
@@ -63,7 +63,8 @@ export function DemoStage({
 
       <div
         className={cn(
-          "group/stage relative mx-auto w-full max-w-[640px] rounded-2xl bg-background shadow-[var(--shadow-soft)] ring-1 ring-border",
+          "group/stage relative mx-auto w-full max-w-[640px] bg-surface shadow-[var(--shadow-card)]",
+          "rounded-[var(--radius-card)]",
           escape ? "overflow-visible" : "overflow-hidden",
           hero ? "min-h-[420px]" : "min-h-[200px]"
         )}
@@ -77,7 +78,9 @@ export function DemoStage({
             type="button"
             onClick={copy}
             className={cn(
-              "flex min-h-11 items-center justify-center rounded-lg bg-background px-4 text-[13px] font-medium text-foreground shadow-[var(--shadow-soft)] ring-1 ring-border transition-transform active:scale-[0.98]",
+              "flex h-[32px] items-center justify-center bg-surface px-4 text-[13px] font-medium text-ink shadow-[var(--shadow-btn)]",
+              "rounded-[var(--radius-control)] transition-all duration-150",
+              "hover:shadow-[var(--shadow-raised)] active:scale-[0.98]",
               focusRing
             )}
           >
@@ -87,7 +90,9 @@ export function DemoStage({
             type="button"
             onClick={() => setOpen(true)}
             className={cn(
-              "flex min-h-11 items-center gap-2 rounded-lg bg-background px-4 text-[13px] font-medium text-foreground shadow-[var(--shadow-soft)] ring-1 ring-border transition-transform active:scale-[0.98]",
+              "flex h-[32px] items-center gap-2 bg-surface px-4 text-[13px] font-medium text-ink shadow-[var(--shadow-btn)]",
+              "rounded-[var(--radius-control)] transition-all duration-150",
+              "hover:shadow-[var(--shadow-raised)] active:scale-[0.98]",
               focusRing
             )}
           >
@@ -135,11 +140,11 @@ export function SectionDivider({
 }) {
   return (
     <div id={id} data-naisu-section className="scroll-mt-28 md:scroll-mt-24">
-      <h2 className="text-lg font-medium tracking-tight text-foreground">
-        <span className="mr-2 tabular-nums text-muted-foreground">{index}</span>
+      <h2 className="text-[16px] font-medium leading-snug tracking-tight text-ink">
+        <span className="mr-2 tabular-nums text-ink-3">{index}</span>
         {title}
       </h2>
-      <p className="mt-2 max-w-[640px] text-[14px] leading-relaxed text-muted-foreground">
+      <p className="mt-2.5 max-w-[640px] text-[14px] leading-relaxed text-ink-2">
         {description}
       </p>
     </div>

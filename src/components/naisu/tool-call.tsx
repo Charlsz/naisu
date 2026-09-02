@@ -26,18 +26,18 @@ export function ToolCall({ name, status = "running", className }: ToolCallProps)
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2",
+        "inline-flex items-center gap-2.5 rounded-[var(--radius-control)] bg-surface px-3 py-2 shadow-[var(--shadow-hairline)]",
         className
       )}
     >
-      <span className="font-mono text-[13px] text-foreground">{name}</span>
+      <span className="font-mono text-[13px] text-ink">{name}</span>
       <span
         className={cn(
-          "rounded px-1.5 py-0.5 text-[12px] font-medium uppercase tracking-wide",
-          status === "running" && "bg-muted text-foreground",
-          status === "done" && "bg-primary text-primary-foreground",
-          status === "error" && "bg-destructive text-destructive-foreground",
-          status === "pending" && "text-muted-foreground"
+          "rounded-[4px] px-1.5 py-0.5 text-[11px] font-medium uppercase tracking-wide",
+          status === "running" && "bg-hover text-ink",
+          status === "done" && "bg-ink text-[var(--page)]",
+          status === "error" && "bg-destructive text-[var(--page)]",
+          status === "pending" && "text-ink-3"
         )}
       >
         {statusLabel[status]}
@@ -126,7 +126,7 @@ export function ToolCallChips({
   return (
     <div
       className={cn(
-        "flex flex-col overflow-hidden rounded-xl bg-background ring-1 ring-border",
+        "flex flex-col overflow-hidden rounded-[var(--radius-card)] bg-surface shadow-[var(--shadow-card)]",
         className
       )}
     >
@@ -135,7 +135,7 @@ export function ToolCallChips({
         return (
           <div
             key={`${tool.name}-${i}`}
-            className={cn(i > 0 && "border-t border-border")}
+            className={cn(i > 0 && "border-t border-line")}
           >
             <button
               type="button"
@@ -143,7 +143,7 @@ export function ToolCallChips({
                 setTookOver(true)
                 setManualIndex(open ? null : i)
               }}
-              className="flex w-full min-h-11 items-center gap-2 px-3 py-2 text-left"
+              className="flex w-full items-center gap-2.5 primitive-card-bar text-left transition-colors hover:bg-hover"
             >
               <motion.span
                 animate={{ rotate: open ? 90 : 0 }}
@@ -151,29 +151,29 @@ export function ToolCallChips({
                 className="flex shrink-0"
               >
                 <ChevronRightIcon
-                  className="size-3.5 text-muted-foreground"
+                  className="size-3.5 text-ink-3"
                   strokeWidth={2.5}
                 />
               </motion.span>
-              <span className="font-mono text-[13px] text-foreground">
+              <span className="font-mono text-[13px] text-ink">
                 {tool.name}
               </span>
               {tool.arg ? (
-                <span className="truncate font-mono text-[13px] text-muted-foreground">
+                <span className="truncate font-mono text-[13px] text-ink-2">
                   {tool.arg}
                 </span>
               ) : null}
               <span className="ml-auto shrink-0">
                 {tool.status === "running" ? (
-                  <span className="inline-flex items-center gap-1.5 text-[12px] font-medium uppercase tracking-wide text-muted-foreground">
+                  <span className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wide text-ink-3">
                     <span
-                      className="block size-2 rounded-full border border-muted-foreground border-t-transparent"
+                      className="block size-2 rounded-full border border-ink-3 border-t-transparent"
                       style={{ animation: "naisu-spin 0.7s linear infinite" }}
                     />
                     loading
                   </span>
                 ) : (
-                  <span className="text-[12px] font-medium uppercase tracking-wide text-muted-foreground">
+                  <span className="text-[11px] font-medium uppercase tracking-wide text-ink-3">
                     ok
                   </span>
                 )}
@@ -190,14 +190,14 @@ export function ToolCallChips({
                   transition={springs.smooth}
                   className="overflow-hidden"
                 >
-                  <div className="flex flex-col gap-1.5 px-3 pb-3 pl-8">
+                  <div className="flex flex-col gap-2 primitive-card-pad pl-10">
                     {tool.output?.map((line) => (
                       <motion.p
                         key={line}
                         initial={{ opacity: 0, y: 4 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={springs.snappy}
-                        className="truncate font-mono text-[13px] text-muted-foreground"
+                        className="truncate font-mono text-[13px] text-ink-2"
                       >
                         {line}
                       </motion.p>
@@ -226,11 +226,11 @@ function DiffChip({ file, added, removed }: ToolDiff) {
       initial={{ opacity: 0, scale: 0.92 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={springs.snappy}
-      className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 ring-1 ring-border"
+      className="inline-flex items-center gap-1.5 rounded-[var(--radius-chip)] bg-hover px-2 py-1 shadow-[var(--shadow-hairline)]"
     >
-      <span className="font-mono text-[12px] text-foreground">{file}</span>
-      <span className="font-mono text-[12px] text-foreground">+{added}</span>
-      <span className="font-mono text-[12px] text-muted-foreground">−{removed}</span>
+      <span className="font-mono text-[12px] text-ink">{file}</span>
+      <span className="font-mono text-[12px] text-ink">+{added}</span>
+      <span className="font-mono text-[12px] text-ink-3">−{removed}</span>
     </motion.span>
   )
 }

@@ -81,16 +81,16 @@ export default function HomePage() {
       <SideNav activeId={activeId} />
 
       <main className="mx-auto min-h-screen max-w-[1280px] px-4 pt-28 pb-24 md:pl-52 md:pr-12 md:pt-12">
-        <header className="mb-16 max-w-[640px]">
-          <p className="text-[14px] font-medium text-muted-foreground">
+        <header className="mb-20 max-w-[640px]">
+          <p className="text-[13px] font-medium tracking-tight text-ink-3">
             AI-native UI kit
           </p>
-          <h1 className="mt-2 text-[28px] font-medium tracking-tight text-foreground">
+          <h1 className="mt-2 text-[32px] font-medium leading-tight tracking-tight text-ink">
             Crafted primitives for agent and chat interfaces.
           </h1>
-          <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
-            Follow one coding agent as it patches <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[13px] text-foreground">parse()</code> in{" "}
-            <span className="text-foreground">payments-api</span>.
+          <p className="mt-4 text-[15px] leading-relaxed text-ink-2">
+            Follow one coding agent as it patches <code className="rounded-[4px] bg-hover px-1.5 py-0.5 font-mono text-[13px] text-ink">parse()</code> in{" "}
+            <span className="font-medium text-ink">payments-api</span>.
           </p>
         </header>
 

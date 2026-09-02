@@ -28,7 +28,7 @@ function DotsMark() {
         return (
           <span
             key={i}
-            className="size-[6px] rounded-full bg-foreground"
+            className="size-[6px] rounded-full bg-ink"
             style={
               delay === null
                 ? { opacity: 0.12 }
@@ -50,10 +50,10 @@ function BarsMark() {
       {[0, 1, 2, 3, 4].map((i) => (
         <span
           key={i}
-          className="w-[3px] origin-bottom rounded-full bg-foreground"
+          className="w-[3px] origin-bottom rounded-full bg-ink"
           style={{
             height: 6 + (i % 3) * 3,
-            animation: `naisu-load-bar 0.85s ease-in-out ${(i * 0.08).toFixed(2)}s infinite`,
+            animation: `naisu-load-bar 0.85s var(--ease-out-strong) ${(i * 0.08).toFixed(2)}s infinite`,
           }}
         />
       ))}
@@ -69,11 +69,11 @@ function RingMark() {
         return (
           <span
             key={i}
-            className="absolute size-[3px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground"
+            className="absolute size-[3px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-ink"
             style={{
               left: `${50 + Math.cos(a) * 38}%`,
               top: `${50 + Math.sin(a) * 38}%`,
-              animation: `naisu-load-ring 0.9s ease-in-out ${(i * 0.08).toFixed(2)}s infinite`,
+              animation: `naisu-load-ring 0.9s var(--ease-out-strong) ${(i * 0.08).toFixed(2)}s infinite`,
             }}
           />
         )
@@ -113,9 +113,9 @@ export function LoadingState({
     >
       <style>{LOAD_CSS}</style>
       <LoadingMark variant={variant} />
-      <div className="flex min-w-0 items-baseline gap-2">
-        <p className="naisu-shimmer truncate text-sm font-medium">{label}</p>
-        <span className="shrink-0 font-mono text-[13px] text-muted-foreground">
+      <div className="flex min-w-0 items-baseline gap-2.5">
+        <p className="naisu-shimmer truncate text-[14px] font-medium">{label}</p>
+        <span className="shrink-0 font-mono text-[13px] tabular-nums text-ink-3">
           {elapsed}
         </span>
       </div>

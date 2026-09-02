@@ -76,32 +76,28 @@ export function StreamingText({
   return (
     <div
       className={cn(
-        "rounded-xl bg-background p-3 shadow-[var(--shadow-soft)] ring-1 ring-border",
+        "rounded-[var(--radius-card)] bg-surface shadow-[var(--shadow-card)]",
+        "primitive-card-pad",
         className
       )}
     >
-      <p className="min-h-[2.6em] text-[15px] leading-relaxed text-foreground">
+      <p className="min-h-[2.6em] text-[15px] leading-relaxed text-ink">
         <span>{visible}</span>
         {streaming ? (
-          <motion.span
-            aria-hidden
-            animate={{ opacity: [1, 0.15, 1] }}
-            transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" }}
-            className="ml-px inline-block h-[0.95em] w-[2px] translate-y-[2px] bg-foreground align-baseline"
-          />
+          <span className="stream-caret is-streaming" />
         ) : cite ? (
           <motion.span
             initial={{ opacity: 0, y: 2 }}
             animate={{ opacity: 1, y: 0 }}
             transition={springs.snappy}
-            className="ml-1 inline-flex items-center rounded bg-muted px-1.5 font-mono text-[12px] text-foreground"
+            className="ml-1 inline-flex items-center rounded-[4px] bg-hover px-1.5 font-mono text-[12px] text-ink"
           >
             {cite}
           </motion.span>
         ) : null}
       </p>
 
-      <div className="mt-2 min-h-[52px] border-t border-border pt-2">
+      <div className="mt-2.5 min-h-[40px] border-t border-line pt-2.5">
         <AnimatePresence initial={false}>
           {!streaming ? (
             <motion.div
@@ -120,23 +116,23 @@ export function StreamingText({
                   }}
                 >
                   {copied ? (
-                    <CheckIcon className="size-3" strokeWidth={2.5} />
+                    <CheckIcon className="size-3.5" strokeWidth={2.5} />
                   ) : (
-                    <CopyIcon className="size-3" strokeWidth={2.5} />
+                    <CopyIcon className="size-3.5" strokeWidth={2.5} />
                   )}
                 </IconAction>
                 <IconAction label="Retry" onClick={() => setShown(0)}>
-                  <RefreshCwIcon className="size-3" strokeWidth={2.5} />
+                  <RefreshCwIcon className="size-3.5" strokeWidth={2.5} />
                 </IconAction>
                 <IconAction label="Save">
-                  <BookmarkIcon className="size-3" strokeWidth={2.5} />
+                  <BookmarkIcon className="size-3.5" strokeWidth={2.5} />
                 </IconAction>
 
                 {sources.length ? (
                   <button
                     type="button"
                     onClick={() => setOpenSources((v) => !v)}
-                    className="ml-auto flex min-h-9 items-center gap-1 rounded-lg px-2 text-[13px] text-muted-foreground hover:text-foreground"
+                    className="ml-auto flex h-[32px] items-center gap-1.5 rounded-[var(--radius-control)] px-2.5 text-[13px] text-ink-2 transition-colors hover:bg-hover hover:text-ink"
                   >
                     {sources.length} sources
                     <motion.span
@@ -144,7 +140,7 @@ export function StreamingText({
                       transition={springs.snappy}
                       className="flex"
                     >
-                      <ChevronDownIcon className="size-2.5" strokeWidth={2.5} />
+                      <ChevronDownIcon className="size-3" strokeWidth={2.5} />
                     </motion.span>
                   </button>
                 ) : null}
@@ -157,18 +153,18 @@ export function StreamingText({
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={springs.soft}
-                    className="overflow-hidden"
+                    className="mt-2 overflow-hidden"
                   >
                     {sources.map((source) => (
                       <li
                         key={source.label}
-                        className="flex items-center justify-between gap-2 py-0.5"
+                        className="flex items-center justify-between gap-2 py-1"
                       >
-                        <span className="truncate font-mono text-[13px] text-foreground">
+                        <span className="truncate font-mono text-[13px] text-ink">
                           {source.label}
                         </span>
                         {source.meta ? (
-                          <span className="shrink-0 text-[12px] text-muted-foreground">
+                          <span className="shrink-0 text-[12px] text-ink-3">
                             {source.meta}
                           </span>
                         ) : null}
@@ -179,12 +175,12 @@ export function StreamingText({
               </AnimatePresence>
 
               {followUps.length ? (
-                <div className="mt-1.5 flex flex-wrap gap-1">
+                <div className="mt-2 flex flex-wrap gap-1.5">
                   {followUps.map((item) => (
                     <button
                       key={item}
                       type="button"
-                      className="rounded-lg border border-border px-2 py-1 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
+                      className="h-[28px] rounded-[var(--radius-control)] px-2.5 text-[13px] text-ink-2 shadow-[var(--shadow-hairline)] transition-all hover:bg-hover hover:text-ink"
                     >
                       {item}
                     </button>
@@ -213,7 +209,7 @@ function IconAction({
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+      className="primitive-icon-button text-ink-2 transition-all hover:bg-hover hover:text-ink"
     >
       {children}
     </button>

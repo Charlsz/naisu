@@ -100,7 +100,7 @@ export function ThinkingIndicator({
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-xl bg-background ring-1 ring-border",
+        "overflow-hidden rounded-[var(--radius-card)] bg-surface shadow-[var(--shadow-card)]",
         className
       )}
     >
@@ -110,15 +110,15 @@ export function ThinkingIndicator({
           setTouched(true)
           setOpen((v) => !v)
         }}
-        className="flex min-h-11 w-full items-center gap-2 px-3 py-2 text-left"
+        className="primitive-card-bar flex w-full items-center gap-2.5 text-left transition-colors hover:bg-hover"
       >
-        <Icon className="size-4 shrink-0 text-muted-foreground" strokeWidth={2.25} />
+        <Icon className="size-4 shrink-0 text-ink-3" strokeWidth={2.25} />
         {done ? (
-          <span className="flex-1 truncate text-sm text-muted-foreground">
+          <span className="flex-1 truncate text-[14px] text-ink-2">
             {preset.done(seconds)}
           </span>
         ) : (
-          <span className="naisu-shimmer flex-1 truncate text-sm font-medium">
+          <span className="naisu-shimmer flex-1 truncate text-[14px] font-medium">
             {preset.working}...
           </span>
         )}
@@ -127,7 +127,7 @@ export function ThinkingIndicator({
           transition={springs.snappy}
           className="shrink-0"
         >
-          <ChevronDownIcon className="size-4 text-muted-foreground" strokeWidth={2.5} />
+          <ChevronDownIcon className="size-4 text-ink-3" strokeWidth={2.5} />
         </motion.span>
       </button>
 
@@ -138,27 +138,27 @@ export function ThinkingIndicator({
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={springs.soft}
-            className="overflow-hidden border-t border-border"
+            className="overflow-hidden border-t border-line"
           >
-            <ul className="flex flex-col gap-1.5 px-3 py-2">
+            <ul className="flex flex-col gap-2 primitive-card-pad">
               {trace.slice(0, Math.max(count, 1)).map((line, i) => (
                 <li
                   key={line}
-                  className="flex items-center gap-2"
-                  style={{ animation: "naisu-fade-up 0.24s ease-out both" }}
+                  className="flex items-center gap-2.5"
+                  style={{ animation: "naisu-fade-up 0.24s var(--ease-out-strong) both" }}
                 >
                   <span
                     className={cn(
                       "size-1.5 shrink-0 rounded-full",
-                      i < count - 1 || done ? "bg-foreground" : "bg-muted-foreground/60"
+                      i < count - 1 || done ? "bg-ink" : "bg-ink-3"
                     )}
                   />
                   <span
                     className={cn(
                       "truncate text-[13px]",
                       i === count - 1 && !done
-                        ? "text-foreground"
-                        : "text-muted-foreground"
+                        ? "text-ink"
+                        : "text-ink-2"
                     )}
                   >
                     {line}
