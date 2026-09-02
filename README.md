@@ -1,6 +1,26 @@
 # naisu
 
-Copy-paste motion UI for Next.js. One page. Paste source into your app.
+Draw UI by hand. Polish the strokes so they feel finished and still human. Copy the result.
+
+## Architecture
+
+Ports & adapters — product code does not depend on one drawing library.
+
+```
+src/
+  domain/           # Sketch, polish math, component types (pure)
+  application/      # Ports + use-cases
+  infrastructure/   # Adapters (Drawesome canvas, polish, export)
+  presentation/     # React UI — use-cases + adapters only
+```
+
+| Concern | Port | Default |
+| --- | --- | --- |
+| Draw input | `DrawingSurfacePort` | Drawesome (all pens + eraser) |
+| Polish strokes | `StrokePolisherPort` | Naisu polish (domain) |
+| Copy output | `ComponentExporterPort` | React SVG clipboard |
+
+Swap tools in `src/infrastructure/composition/container.ts`.
 
 ## Run
 
@@ -8,11 +28,3 @@ Copy-paste motion UI for Next.js. One page. Paste source into your app.
 npm install
 npm run dev
 ```
-
-## Use a component
-
-1. Copy `src/lib/motion.ts`
-2. Copy a file from `src/components/naisu/`
-3. Paste usage from the site
-
-Deps: Next.js, Tailwind, Motion, shadcn/ui

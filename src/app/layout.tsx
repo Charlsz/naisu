@@ -5,8 +5,9 @@ import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 
 const inter = Inter({
-  variable: "--font-sans",
   subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
 })
 
 function resolveSiteUrl() {
@@ -32,41 +33,12 @@ function resolveSiteUrl() {
 }
 
 const siteUrl = resolveSiteUrl()
-
-const siteName = "naisu"
-const title = {
-  default: "naisu · UI components, interactions & experiments",
-  template: "%s · naisu",
-}
-const description =
-  "A growing collection of components, interactions, and experiments for the web."
+const siteName = "Naisu"
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title,
-  description,
+  title: siteName,
   applicationName: siteName,
-  keywords: [
-    "naisu",
-    "UI components",
-    "React components",
-    "Next.js components",
-    "motion UI",
-    "interaction design",
-    "web experiments",
-    "copy paste components",
-    "animation",
-    "Framer Motion",
-    "frontend",
-    "design engineering",
-  ],
-  authors: [{ name: "naisu", url: siteUrl }],
-  creator: "naisu",
-  publisher: "naisu",
-  category: "technology",
-  alternates: {
-    canonical: "/",
-  },
   icons: {
     icon: [
       { url: "/naisu.ico", sizes: "16x16 32x32 48x48", type: "image/x-icon" },
@@ -79,81 +51,25 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "/",
     siteName,
-    title: title.default,
-    description,
+    title: siteName,
     images: [
       {
-        // ?v= busts crawler caches when the asset is recompressed in place.
         url: "/urlpreview.png?v=2",
         width: 1200,
         height: 630,
-        alt: "naisu — components, interactions, and experiments for the web",
+        alt: "Naisu",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: title.default,
-    description,
+    title: siteName,
     images: ["/urlpreview.png?v=2"],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
-    },
   },
   other: {
     "theme-color": "#FDFDFC",
   },
-}
-
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebSite",
-      "@id": `${siteUrl}/#website`,
-      url: siteUrl,
-      name: siteName,
-      description,
-      inLanguage: "en",
-      publisher: { "@id": `${siteUrl}/#organization` },
-    },
-    {
-      "@type": "Organization",
-      "@id": `${siteUrl}/#organization`,
-      name: siteName,
-      url: siteUrl,
-      logo: `${siteUrl}/naisu.png`,
-    },
-    {
-      "@type": "WebPage",
-      "@id": `${siteUrl}/#webpage`,
-      url: siteUrl,
-      name: title.default,
-      description,
-      isPartOf: { "@id": `${siteUrl}/#website` },
-      about: {
-        "@type": "SoftwareApplication",
-        name: siteName,
-        applicationCategory: "DeveloperApplication",
-        operatingSystem: "Web",
-        description,
-        offers: {
-          "@type": "Offer",
-          price: "0",
-          priceCurrency: "USD",
-        },
-      },
-    },
-  ],
 }
 
 export default function RootLayout({
@@ -163,11 +79,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full bg-[#FDFDFC] font-sans text-[#111111]">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+      <body
+        className={`${inter.className} min-h-full bg-background font-sans text-foreground`}
+      >
         {children}
         <Analytics />
       </body>

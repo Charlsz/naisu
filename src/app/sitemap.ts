@@ -18,21 +18,12 @@ function siteUrl() {
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = siteUrl()
-  const now = new Date()
-
   return [
     {
-      url: base,
-      lastModified: now,
+      url: siteUrl(),
+      lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1,
-    },
-    {
-      url: `${base}/playground`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.8,
     },
   ]
 }
