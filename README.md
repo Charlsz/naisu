@@ -1,6 +1,6 @@
 # naisu
 
-Draw UI by hand. Polish the strokes so they feel finished and still human. Copy the result.
+Draw your own UI components
 
 ## Architecture
 
