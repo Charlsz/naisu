@@ -14,8 +14,10 @@ import { polishSketch } from "@/application/use-cases/polish-sketch"
 import { FlowButton } from "@/components/ui/flow-button"
 import type { DrawnComponent } from "@/domain/component/types"
 import type { SketchDocument, Stroke } from "@/domain/sketch/types"
+import { stampStrokeTiming } from "@/domain/sketch/timing"
 import { container } from "@/infrastructure/composition/container"
 import { DrawesomeCanvas } from "@/infrastructure/drawing/drawesome-canvas"
+import { ComponentPreviewPanel } from "@/presentation/studio/component-preview-panel"
 
 /**
  * Studio talks to use-cases + infrastructure canvas adapter.
@@ -24,11 +26,14 @@ import { DrawesomeCanvas } from "@/infrastructure/drawing/drawesome-canvas"
 export function StudioShell() {
   const surfaceRef = useRef<DrawingSurfaceHandle>(null)
   const hideCopiedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const sketchOriginMs = useRef<number | null>(null)
+  const trackedStrokesRef = useRef<Stroke[]>([])
   const [sketch, setSketch] = useState<SketchDocument>(() =>
     createSketchDocument({ board: { w: 800, h: 560 } })
   )
   const [component, setComponent] = useState<DrawnComponent | null>(null)
   const [showCopied, setShowCopied] = useState(false)
+  const [copiedLabel, setCopiedLabel] = useState("Copied!")
   const [pending, startTransition] = useTransition()
 
   useEffect(() => {
@@ -37,21 +42,60 @@ export function StudioShell() {
     }
   }, [])
 
+  function trackStrokes(strokes: Stroke[]): Stroke[] {
+    const ink = strokes.filter((s) => !s.erased)
+    if (ink.length === 0) {
+      sketchOriginMs.current = null
+      trackedStrokesRef.current = strokes
+      return strokes
+    }
+
+    const now = performance.now()
+    if (sketchOriginMs.current == null) {
+      sketchOriginMs.current = now
+    }
+
+    const tracked = stampStrokeTiming(
+      trackedStrokesRef.current,
+      strokes,
+      now,
+      sketchOriginMs.current
+    )
+    trackedStrokesRef.current = tracked
+    return tracked
+  }
+
   function onStrokesChange(strokes: Stroke[]) {
+    const tracked = trackStrokes(strokes)
     const size = surfaceRef.current?.getSize()
     setSketch((current) =>
       touchSketch(current, {
-        strokes,
+        strokes: tracked,
         board: size ?? current.board,
       })
     )
-    setComponent(null)
+    setComponent((current) => {
+      if (!current?.polished) return null
+      const sameIds =
+        current.sketch.strokes.length === tracked.length &&
+        current.sketch.strokes.every((s, i) => s.id === tracked[i]?.id)
+      if (!sameIds) return null
+      return {
+        ...current,
+        sketch: touchSketch(current.sketch, {
+          strokes: tracked,
+          board: size ?? current.sketch.board,
+        }),
+      }
+    })
   }
 
   function onPolish() {
     if (sketch.strokes.length === 0) return
     startTransition(() => {
-      const liveStrokes = surfaceRef.current?.getStrokes() ?? sketch.strokes
+      const liveStrokes = trackStrokes(
+        surfaceRef.current?.getStrokes() ?? sketch.strokes
+      )
       const size = surfaceRef.current?.getSize() ?? sketch.board
       const base = touchSketch(sketch, { strokes: liveStrokes, board: size })
       const result = polishSketch(container.polisher, base, {
@@ -60,25 +104,36 @@ export function StudioShell() {
       })
       setComponent(result)
       setSketch(result.sketch)
+      trackedStrokesRef.current = result.sketch.strokes
       surfaceRef.current?.setStrokes(result.sketch.strokes)
     })
   }
 
-  async function onCopy() {
+  async function onCopy(format: "react-svg" | "react-svg-animated") {
     if (sketch.strokes.length === 0) return
-    const liveStrokes = surfaceRef.current?.getStrokes() ?? sketch.strokes
+    const liveStrokes = trackStrokes(
+      surfaceRef.current?.getStrokes() ?? sketch.strokes
+    )
     const size = surfaceRef.current?.getSize() ?? sketch.board
-    const liveSketch = touchSketch(sketch, { strokes: liveStrokes, board: size })
-    const drawn: DrawnComponent = component ?? {
-      sketch: liveSketch,
-      polished: false,
-    }
+    const liveSketch = touchSketch(sketch, {
+      strokes: liveStrokes,
+      board: size,
+    })
+    const drawn: DrawnComponent = component
+      ? { ...component, sketch: liveSketch }
+      : {
+          sketch: liveSketch,
+          polished: false,
+        }
 
     try {
-      await exportComponent(container.exporter, drawn, "react-svg", {
+      await exportComponent(container.exporter, drawn, format, {
         copy: true,
       })
       if (hideCopiedTimer.current) clearTimeout(hideCopiedTimer.current)
+      setCopiedLabel(
+        format === "react-svg-animated" ? "Animation copied!" : "Copied!"
+      )
       setShowCopied(true)
       hideCopiedTimer.current = setTimeout(() => setShowCopied(false), 1400)
     } catch {
@@ -125,20 +180,30 @@ export function StudioShell() {
           type="button"
           onClick={onPolish}
           disabled={pending || !hasInk}
-          borderColor="#111111"
+          borderColor="#fdfdfc"
           className="bg-foreground text-background hover:bg-foreground/90 hover:text-background"
         >
           Polish lines
         </FlowButton>
         <FlowButton
           type="button"
-          onClick={onCopy}
+          onClick={() => onCopy("react-svg")}
           disabled={!hasInk}
           borderColor="#111111"
         >
           Copy component
         </FlowButton>
+        <FlowButton
+          type="button"
+          onClick={() => onCopy("react-svg-animated")}
+          disabled={!hasInk}
+          borderColor="#111111"
+        >
+          Copy animation component
+        </FlowButton>
       </div>
+
+      <ComponentPreviewPanel />
 
       <AnimatePresence>
         {showCopied ? (
@@ -158,7 +223,7 @@ export function StudioShell() {
             style={{ willChange: "transform, opacity" }}
           >
             <span className="rounded-full bg-foreground px-4 py-2 text-sm font-[550] text-background shadow-[0_8px_24px_rgba(0,0,0,0.12)]">
-              Copied!
+              {copiedLabel}
             </span>
           </motion.div>
         ) : null}
