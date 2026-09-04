@@ -4,7 +4,7 @@
 
 import type { SketchDocument } from "@/domain/sketch/types"
 
-export type ExportFormat = "svg" | "react-svg" | "png"
+export type ExportFormat = "svg" | "react-svg" | "react-svg-animated" | "png"
 
 export type ComponentExport = {
   format: ExportFormat

@@ -1,6 +1,12 @@
 import type { ComponentExporterPort } from "@/application/ports/component-exporter"
 import type { ComponentExport, ExportRequest } from "@/domain/component/types"
 import type { BoardSize, Stroke } from "@/domain/sketch/types"
+import {
+  activeInkStrokes,
+  earliestStartedAt,
+  strokeAnimationDelay,
+  strokeAnimationDuration,
+} from "@/domain/sketch/timing"
 
 export const svgComponentExporter: ComponentExporterPort = {
   id: "svg-clipboard",
@@ -14,6 +20,20 @@ export const svgComponentExporter: ComponentExporterPort = {
         format: "react-svg",
         content: source,
         filename,
+        mimeType: "text/plain",
+      }
+    }
+
+    if (request.format === "react-svg-animated") {
+      const source = toAnimatedReactSvgSource(
+        sketch.strokes,
+        sketch.board,
+        sketch.name
+      )
+      return {
+        format: "react-svg-animated",
+        content: source,
+        filename: `${filename}-animated`,
         mimeType: "text/plain",
       }
     }
@@ -35,8 +55,7 @@ export const svgComponentExporter: ComponentExporterPort = {
 }
 
 function strokesToSvg(strokes: Stroke[], board: BoardSize): string {
-  const paths = strokes
-    .filter((s) => !s.erased && s.points.length > 0)
+  const paths = activeInkStrokes(strokes)
     .map((s) => {
       const d = pointsToPath(s.points)
       return `  <path d="${d}" fill="none" stroke="${escapeXml(s.color)}" stroke-width="${s.size}" stroke-linecap="round" stroke-linejoin="round" opacity="${s.opacity}" />`
@@ -56,8 +75,7 @@ function toReactSvgSource(
   name: string
 ): string {
   const componentName = toComponentName(name)
-  const paths = strokes
-    .filter((s) => !s.erased && s.points.length > 0)
+  const paths = activeInkStrokes(strokes)
     .map((s) => {
       const d = pointsToPath(s.points)
       return `      <path d="${d}" stroke="${escapeXml(s.color)}" strokeWidth={${s.size}} strokeLinecap="round" strokeLinejoin="round" opacity={${s.opacity}} />`
@@ -72,6 +90,78 @@ function toReactSvgSource(
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
+${paths}
+    </svg>
+  )
+}
+`
+}
+
+/**
+ * Draw-itself animation via pathLength + stroke-dashoffset,
+ * timed to how the user actually inked each stroke.
+ */
+function toAnimatedReactSvgSource(
+  strokes: Stroke[],
+  board: BoardSize,
+  name: string
+): string {
+  const componentName = toComponentName(name)
+  const ink = activeInkStrokes(strokes)
+  const origin = earliestStartedAt(ink)
+
+  const paths = ink
+    .map((s, i) => {
+      const d = pointsToPath(s.points)
+      const delay = round(strokeAnimationDelay(s, origin) / 1000)
+      const dur = round(strokeAnimationDuration(s) / 1000)
+      return `      <path
+        className="naisu-draw"
+        d="${d}"
+        stroke="${escapeXml(s.color)}"
+        strokeWidth={${s.size}}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        opacity={${s.opacity}}
+        pathLength={1}
+        style={{
+          ["--naisu-delay" as string]: "${delay}s",
+          ["--naisu-dur" as string]: "${dur}s",
+          animationDelay: "${delay}s",
+          animationDuration: "${dur}s",
+        }}
+        data-stroke={${i}}
+      />`
+    })
+    .join("\n")
+
+  return `export function ${componentName}(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 ${board.w} ${board.h}"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <style>{\`
+        @keyframes naisu-draw-self {
+          to { stroke-dashoffset: 0; }
+        }
+        .naisu-draw {
+          fill: none;
+          stroke-dasharray: 1;
+          stroke-dashoffset: 1;
+          animation-name: naisu-draw-self;
+          animation-timing-function: ease-out;
+          animation-fill-mode: forwards;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .naisu-draw {
+            stroke-dashoffset: 0;
+            animation: none;
+          }
+        }
+      \`}</style>
 ${paths}
     </svg>
   )
