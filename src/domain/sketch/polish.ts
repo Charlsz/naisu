@@ -216,13 +216,27 @@ export function polishPoints(
 
 export function polishStroke(stroke: Stroke, options: PolishOptions = {}): Stroke {
   if (stroke.erased || stroke.points.length < 2) return stroke
+  const points = polishPoints(stroke.points, {
+    ...options,
+    seed: (options.seed ?? 1) ^ hashId(stroke.id),
+  })
+  // Keep draw-order timing so animation export still tracks the gesture.
   return {
     ...stroke,
-    points: polishPoints(stroke.points, {
-      ...options,
-      seed: (options.seed ?? 1) ^ hashId(stroke.id),
-    }),
+    points: remapPointTimes(stroke.points, points),
   }
+}
+
+/** Spread original timing across polished samples so the gesture still reads. */
+function remapPointTimes(from: Point[], to: Point[]): Point[] {
+  const startT = from[0]?.t ?? 0
+  const endT = from[from.length - 1]?.t ?? startT
+  if (to.length <= 1) return to.map((p) => ({ ...p, t: startT }))
+  const span = Math.max(0, endT - startT)
+  return to.map((p, i) => ({
+    ...p,
+    t: startT + (span * i) / (to.length - 1),
+  }))
 }
 
 export function polishStrokes(

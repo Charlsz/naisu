@@ -32,6 +32,10 @@ export type Stroke = {
   pen: PenKind
   /** Soft delete / erase residue — exporters may skip these. */
   erased?: boolean
+  /** When this stroke began, ms after the first ink on the board. */
+  startedAt?: number
+  /** How long the gesture lasted (ms). Used for draw-self animation. */
+  durationMs?: number
 }
 
 export type BoardSize = {
